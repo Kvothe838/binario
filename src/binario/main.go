@@ -4,7 +4,8 @@ import (
 	"fmt"
 )
 
-type Tablero [][]int
+type Valor uint8
+type Tablero [][]Valor
 
 func main() {
 	tablero := make(Tablero, 0)
@@ -12,7 +13,7 @@ func main() {
 	cantidadFilas := 10
 
 	for i := 0; i < cantidadColumnas; i++ {
-		columna := make([]int, 0)
+		columna := make([]Valor, 0)
 		for j := 0; j < cantidadFilas; j++ {
 			columna = append(columna, 1)
 		}
