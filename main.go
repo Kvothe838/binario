@@ -10,6 +10,7 @@ type Casilla struct {
 	visible bool
 }
 type Tablero [][]Casilla
+type Girable func(*bool) Tablero
 
 func main() {
 	tablero := ArmarTablero()
@@ -20,10 +21,15 @@ func main() {
 	fmt.Println()
 	fmt.Println()
 
-	tableroArmado := tablero.Resolver()
+	/* tableroArmado := tablero.Resolver() */
+	tablero.Resolver()
+
+	/* fmt.Println()
+	fmt.Println()
+
 	fmt.Println("Tablero resuelto")
 	fmt.Println()
-	tableroArmado.Imprimir()
+	tableroArmado.Imprimir() */
 }
 
 func ArmarTablero() Tablero {
@@ -71,11 +77,29 @@ func (tablero Tablero) Imprimir() {
 }
 
 func (tablero Tablero) Resolver() Tablero {
-	tablero = tablero.ResolverDoblesSeguidos()
-	return tablero
+	volverABarrer := true
+	nuevoTablero := tablero
+
+	for volverABarrer {
+		volverABarrer = false
+		nuevoTablero.ResolverDoblesSeguidos()
+		fmt.Println("Dobles seguidos")
+		fmt.Println()
+		nuevoTablero.Imprimir()
+
+		fmt.Println()
+		fmt.Println()
+
+		nuevoTablero.ResolverDoblesSalteados(&volverABarrer)
+		fmt.Println("Dobles salteados")
+		fmt.Println()
+		nuevoTablero.Imprimir()
+	}
+
+	return nuevoTablero
 }
 
-func (tablero Tablero) ResolverDoblesSeguidos() Tablero {
+func (tablero *Tablero) ResolverDoblesSeguidos() {
 	volverABarrer := true
 
 	for volverABarrer {
@@ -83,14 +107,14 @@ func (tablero Tablero) ResolverDoblesSeguidos() Tablero {
 		seguirBarriendo := true
 
 		for seguirBarriendo {
-			tablero.ResolverDoblesHorizontal(&seguirBarriendo)
+			tablero.ResolverDoblesSeguidosHorizontal(&seguirBarriendo)
 		}
 
 		tablero.DarVuelta()
 
 		seguirBarriendo = true
 		for seguirBarriendo {
-			tablero.ResolverDoblesHorizontal(&seguirBarriendo)
+			tablero.ResolverDoblesSeguidosHorizontal(&seguirBarriendo)
 
 			if seguirBarriendo {
 				volverABarrer = true
@@ -99,11 +123,40 @@ func (tablero Tablero) ResolverDoblesSeguidos() Tablero {
 
 		tablero.DarVuelta()
 	}
-
-	return tablero
 }
 
-func (tablero Tablero) ResolverDoblesHorizontal(seguirBarriendo *bool) {
+func (tablero *Tablero) ResolverDoblesSalteados(volverABarrerExterno *bool) {
+	volverABarrer := true
+
+	for volverABarrer {
+		volverABarrer = false
+		seguirBarriendo := true
+
+		for seguirBarriendo {
+			tablero.ResolverDoblesSalteadosHorizontal(&seguirBarriendo)
+
+			if seguirBarriendo {
+				*volverABarrerExterno = true
+			}
+		}
+
+		tablero.DarVuelta()
+
+		seguirBarriendo = true
+		for seguirBarriendo {
+			tablero.ResolverDoblesSalteadosHorizontal(&seguirBarriendo)
+
+			if seguirBarriendo {
+				volverABarrer = true
+				*volverABarrerExterno = true
+			}
+		}
+
+		tablero.DarVuelta()
+	}
+}
+
+func (tablero Tablero) ResolverDoblesSeguidosHorizontal(seguirBarriendo *bool) Tablero {
 	*seguirBarriendo = false
 
 	for indiceFila := 0; indiceFila < len(tablero); indiceFila++ {
@@ -153,6 +206,45 @@ func (tablero Tablero) ResolverDoblesHorizontal(seguirBarriendo *bool) {
 			}
 		}
 	}
+
+	return tablero
+}
+
+func (tablero Tablero) ResolverDoblesSalteadosHorizontal(seguirBarriendo *bool) Tablero {
+	*seguirBarriendo = false
+
+	for indiceFila := 0; indiceFila < len(tablero); indiceFila++ {
+		fila := tablero[indiceFila]
+
+		for indiceColumna := 0; indiceColumna < len(fila); indiceColumna++ {
+			casilla := fila[indiceColumna]
+			ultimaColumna := len(fila) - 1
+			siguienteColumna := indiceColumna + 1
+			opuesto := casilla.valor.ObtenerOpuesto()
+
+			if !casilla.visible || indiceColumna == ultimaColumna || siguienteColumna == ultimaColumna {
+				continue
+			}
+
+			siguienteCasilla := &fila[siguienteColumna]
+
+			if siguienteCasilla.visible {
+				continue
+			}
+
+			siguienteSiguienteCasilla := fila[siguienteColumna+1]
+
+			if !siguienteSiguienteCasilla.visible || casilla.valor != siguienteSiguienteCasilla.valor {
+				continue
+			}
+
+			siguienteCasilla.valor = opuesto
+			siguienteCasilla.visible = true
+			*seguirBarriendo = true
+		}
+	}
+
+	return tablero
 }
 
 func (valor Valor) ObtenerOpuesto() Valor {
