@@ -76,61 +76,83 @@ func (tablero Tablero) Resolver() Tablero {
 }
 
 func (tablero Tablero) ResolverDoblesSeguidos() Tablero {
-	seguirBarriendo := false
+	volverABarrer := true
 
-	for !seguirBarriendo {
-		seguirBarriendo = false
+	for volverABarrer {
+		volverABarrer = false
+		seguirBarriendo := true
 
-		for indiceFila := 0; indiceFila < len(tablero); indiceFila++ {
-			fila := tablero[indiceFila]
+		for seguirBarriendo {
+			tablero.ResolverDoblesHorizontal(&seguirBarriendo)
+		}
 
-			for indiceColumna := 0; indiceColumna < len(fila); indiceColumna++ {
-				casilla := fila[indiceColumna]
-				primerColumna := 0
-				ultimaColumna := len(fila) - 1
-				siguienteColumna := indiceColumna + 1
-				anteriorColumna := indiceColumna - 1
-				opuesto := casilla.valor.ObtenerOpuesto()
+		tablero.DarVuelta()
 
-				if !casilla.visible || indiceColumna == ultimaColumna {
-					continue
+		seguirBarriendo = true
+		for seguirBarriendo {
+			tablero.ResolverDoblesHorizontal(&seguirBarriendo)
+
+			if seguirBarriendo {
+				volverABarrer = true
+			}
+		}
+
+		tablero.DarVuelta()
+	}
+
+	return tablero
+}
+
+func (tablero Tablero) ResolverDoblesHorizontal(seguirBarriendo *bool) {
+	*seguirBarriendo = false
+
+	for indiceFila := 0; indiceFila < len(tablero); indiceFila++ {
+		fila := tablero[indiceFila]
+
+		for indiceColumna := 0; indiceColumna < len(fila); indiceColumna++ {
+			casilla := fila[indiceColumna]
+			primerColumna := 0
+			ultimaColumna := len(fila) - 1
+			siguienteColumna := indiceColumna + 1
+			anteriorColumna := indiceColumna - 1
+			opuesto := casilla.valor.ObtenerOpuesto()
+
+			if !casilla.visible || indiceColumna == ultimaColumna {
+				continue
+			}
+
+			siguienteCasilla := fila[siguienteColumna]
+
+			if !siguienteCasilla.visible {
+				continue
+			}
+
+			if casilla.valor != siguienteCasilla.valor {
+				continue
+			}
+
+			if indiceColumna != primerColumna {
+				anteriorCasilla := &fila[anteriorColumna]
+
+				if !anteriorCasilla.visible {
+					anteriorCasilla.valor = opuesto
+					anteriorCasilla.visible = true
+					*seguirBarriendo = true
 				}
 
-				siguienteCasilla := fila[siguienteColumna]
+			}
 
-				if !siguienteCasilla.visible {
-					continue
-				}
+			if siguienteColumna != ultimaColumna {
+				siguienteSiguienteCasilla := &fila[siguienteColumna+1]
 
-				if casilla.valor != siguienteCasilla.valor {
-					continue
-				}
-
-				if indiceColumna != primerColumna {
-					anteriorCasilla := &fila[anteriorColumna]
-
-					if !anteriorCasilla.visible {
-						anteriorCasilla.valor = opuesto
-						anteriorCasilla.visible = true
-						seguirBarriendo = true
-					}
-
-				}
-
-				if siguienteColumna != ultimaColumna {
-					siguienteSiguienteCasilla := &fila[siguienteColumna+1]
-
-					if !siguienteCasilla.visible {
-						siguienteSiguienteCasilla.valor = opuesto
-						siguienteSiguienteCasilla.visible = true
-						seguirBarriendo = true
-					}
+				if !siguienteSiguienteCasilla.visible {
+					siguienteSiguienteCasilla.valor = opuesto
+					siguienteSiguienteCasilla.visible = true
+					*seguirBarriendo = true
 				}
 			}
 		}
 	}
-
-	return tablero
 }
 
 func (valor Valor) ObtenerOpuesto() Valor {
@@ -141,4 +163,24 @@ func (valor Valor) ObtenerOpuesto() Valor {
 	}
 
 	return opuestos[valor]
+}
+
+func (tablero *Tablero) DarVuelta() {
+	lado := len(*tablero)
+	nuevoTablero := make(Tablero, lado)
+	filas := len(*tablero)
+
+	for i := 0; i < filas; i++ {
+		nuevoTablero[i] = make([]Casilla, lado)
+	}
+
+	for i := 0; i < filas; i++ {
+		columnas := len((*tablero)[i])
+
+		for j := 0; j < columnas; j++ {
+			nuevoTablero[j][i] = (*tablero)[i][j]
+		}
+	}
+
+	*tablero = nuevoTablero
 }
