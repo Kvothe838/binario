@@ -36,7 +36,7 @@ func ArmarTablero() Tablero {
 	vacio := Casilla{2, false}
 	cero := Casilla{0, true}
 	uno := Casilla{1, true}
-	var tablero Tablero = [][]Casilla{
+	var tablero Tablero = Tablero{
 		{vacio, uno, uno, vacio, uno, vacio, vacio, vacio, vacio, vacio, vacio, vacio, uno, vacio},
 		{vacio, vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio, cero, vacio, vacio},
 		{uno, vacio, vacio, vacio, cero, cero, vacio, cero, cero, vacio, uno, vacio, vacio, vacio},
@@ -52,6 +52,23 @@ func ArmarTablero() Tablero {
 		{vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio, cero, cero, vacio, vacio, vacio, vacio},
 		{vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio},
 	}
+
+	/* var tablero Tablero = Tablero{
+		{vacio, cero, vacio, vacio, vacio, cero, vacio, vacio, cero, vacio, vacio, vacio, vacio, vacio},
+		{vacio, uno, vacio, vacio, vacio, uno, vacio, vacio, vacio, cero, vacio, vacio, cero, vacio},
+		{cero, uno, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio, cero, vacio, vacio, vacio},
+		{vacio, cero, vacio, vacio, vacio, cero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, cero},
+		{vacio, vacio, cero, uno, uno, cero, cero, uno, cero, uno, uno, cero, cero, uno},
+		{uno, vacio, vacio, cero, vacio, uno, vacio, vacio, vacio, vacio, cero, uno, uno, cero},
+		{cero, uno, uno, cero, vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio, vacio, vacio},
+		{cero, vacio, vacio, uno, vacio, vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio},
+		{uno, cero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, cero},
+		{uno, uno, cero, cero, uno, cero, cero, cero, cero, uno, vacio, vacio, uno, vacio},
+		{cero, uno, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio},
+		{vacio, cero, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio, vacio, vacio, cero},
+		{uno, cero, cero, uno, vacio, vacio, cero, vacio, vacio, vacio, vacio, vacio, vacio, uno},
+		{vacio, uno, vacio, vacio, uno, cero, uno, vacio, cero, vacio, vacio, uno, cero, cero},
+	} */
 
 	return tablero
 }
