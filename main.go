@@ -96,6 +96,10 @@ func (tablero Tablero) Resolver() Tablero {
 		fmt.Println()
 		fmt.Println()
 
+		if nuevoTablero.EstaResuelto() {
+			break
+		}
+
 		nuevoTablero.ResolverDoblesSalteados(&volverABarrer)
 		fmt.Println("Dobles salteados")
 		fmt.Println()
@@ -103,6 +107,10 @@ func (tablero Tablero) Resolver() Tablero {
 
 		fmt.Println()
 		fmt.Println()
+
+		if nuevoTablero.EstaResuelto() {
+			break
+		}
 
 		nuevoTablero.ResolverFaltaUnNumero(&volverABarrer)
 		fmt.Println("Falta un numero")
@@ -112,13 +120,36 @@ func (tablero Tablero) Resolver() Tablero {
 		fmt.Println()
 		fmt.Println()
 
+		if nuevoTablero.EstaResuelto() {
+			break
+		}
+
 		nuevoTablero.ResolverFaltaUnoDeUnValor(&volverABarrer)
 		fmt.Println("Falta uno de un valor")
 		fmt.Println()
 		nuevoTablero.Imprimir()
+
+		fmt.Println()
+		fmt.Println()
+
+		if nuevoTablero.EstaResuelto() {
+			break
+		}
 	}
 
 	return nuevoTablero
+}
+
+func (tablero Tablero) EstaResuelto() bool {
+	for indiceFila := 0; indiceFila < len(tablero); indiceFila++ {
+		for indiceColumna := 0; indiceColumna < len(tablero[indiceFila]); indiceColumna++ {
+			if !tablero[indiceFila][indiceColumna].visible {
+				return false
+			}
+		}
+	}
+
+	return true
 }
 
 func (tablero *Tablero) ResolverDoblesSeguidos() {
@@ -130,6 +161,10 @@ func (tablero *Tablero) ResolverDoblesSeguidos() {
 
 		for seguirBarriendo {
 			tablero.ResolverDoblesSeguidosHorizontal(&seguirBarriendo)
+		}
+
+		if tablero.EstaResuelto() {
+			break
 		}
 
 		tablero.DarVuelta()
@@ -144,6 +179,10 @@ func (tablero *Tablero) ResolverDoblesSeguidos() {
 		}
 
 		tablero.DarVuelta()
+
+		if tablero.EstaResuelto() {
+			break
+		}
 	}
 }
 
@@ -162,6 +201,10 @@ func (tablero *Tablero) ResolverDoblesSalteados(volverABarrerExterno *bool) {
 			}
 		}
 
+		if tablero.EstaResuelto() {
+			break
+		}
+
 		tablero.DarVuelta()
 
 		seguirBarriendo = true
@@ -175,6 +218,10 @@ func (tablero *Tablero) ResolverDoblesSalteados(volverABarrerExterno *bool) {
 		}
 
 		tablero.DarVuelta()
+
+		if tablero.EstaResuelto() {
+			break
+		}
 	}
 }
 
@@ -193,6 +240,10 @@ func (tablero *Tablero) ResolverFaltaUnNumero(volverABarrerExterno *bool) {
 			}
 		}
 
+		if tablero.EstaResuelto() {
+			break
+		}
+
 		tablero.DarVuelta()
 
 		seguirBarriendo = true
@@ -206,6 +257,10 @@ func (tablero *Tablero) ResolverFaltaUnNumero(volverABarrerExterno *bool) {
 		}
 
 		tablero.DarVuelta()
+
+		if tablero.EstaResuelto() {
+			break
+		}
 	}
 }
 
@@ -224,6 +279,10 @@ func (tablero *Tablero) ResolverFaltaUnoDeUnValor(volverABarrerExterno *bool) {
 			}
 		}
 
+		if tablero.EstaResuelto() {
+			break
+		}
+
 		tablero.DarVuelta()
 
 		seguirBarriendo = true
@@ -237,6 +296,10 @@ func (tablero *Tablero) ResolverFaltaUnoDeUnValor(volverABarrerExterno *bool) {
 		}
 
 		tablero.DarVuelta()
+
+		if tablero.EstaResuelto() {
+			break
+		}
 	}
 }
 
@@ -276,7 +339,6 @@ func (tablero Tablero) ResolverDoblesSeguidosHorizontal(seguirBarriendo *bool) T
 					anteriorCasilla.visible = true
 					*seguirBarriendo = true
 				}
-
 			}
 
 			if siguienteColumna != ultimaColumna {
