@@ -94,6 +94,14 @@ func (tablero Tablero) Resolver() Tablero {
 		fmt.Println("Dobles salteados")
 		fmt.Println()
 		nuevoTablero.Imprimir()
+
+		fmt.Println()
+		fmt.Println()
+
+		nuevoTablero.ResolverFaltaUnNumero(&volverABarrer)
+		fmt.Println("Falta un numero")
+		fmt.Println()
+		nuevoTablero.Imprimir()
 	}
 
 	return nuevoTablero
@@ -145,6 +153,37 @@ func (tablero *Tablero) ResolverDoblesSalteados(volverABarrerExterno *bool) {
 		seguirBarriendo = true
 		for seguirBarriendo {
 			tablero.ResolverDoblesSalteadosHorizontal(&seguirBarriendo)
+
+			if seguirBarriendo {
+				volverABarrer = true
+				*volverABarrerExterno = true
+			}
+		}
+
+		tablero.DarVuelta()
+	}
+}
+
+func (tablero *Tablero) ResolverFaltaUnNumero(volverABarrerExterno *bool) {
+	volverABarrer := true
+
+	for volverABarrer {
+		volverABarrer = false
+		seguirBarriendo := true
+
+		for seguirBarriendo {
+			tablero.ResolverFaltaUnNumeroHorizontal(&seguirBarriendo)
+
+			if seguirBarriendo {
+				*volverABarrerExterno = true
+			}
+		}
+
+		tablero.DarVuelta()
+
+		seguirBarriendo = true
+		for seguirBarriendo {
+			tablero.ResolverFaltaUnNumeroHorizontal(&seguirBarriendo)
 
 			if seguirBarriendo {
 				volverABarrer = true
@@ -241,6 +280,61 @@ func (tablero Tablero) ResolverDoblesSalteadosHorizontal(seguirBarriendo *bool) 
 			siguienteCasilla.valor = opuesto
 			siguienteCasilla.visible = true
 			*seguirBarriendo = true
+		}
+	}
+
+	return tablero
+}
+
+func (tablero Tablero) ResolverFaltaUnNumeroHorizontal(seguirBarriendo *bool) Tablero {
+	*seguirBarriendo = false
+	lado := len(tablero)
+	vecesMaximoEnFila := lado / 2
+
+	for indiceFila := 0; indiceFila < lado; indiceFila++ {
+		fila := tablero[indiceFila]
+		vecesEnFilaPorValor := map[Valor]int{
+			0: 0,
+			1: 0,
+			2: 0,
+		}
+
+		hayAlMenosUnoNoVisible := false
+
+		for indiceColumna := 0; indiceColumna < len(fila); indiceColumna++ {
+			casilla := fila[indiceColumna]
+			vecesEnFilaPorValor[casilla.valor]++
+
+			if !casilla.visible {
+				hayAlMenosUnoNoVisible = true
+			}
+		}
+
+		if hayAlMenosUnoNoVisible {
+			var valorACompletar *Valor = nil
+			cantidadCeros := vecesEnFilaPorValor[0]
+			cantidadUnos := vecesEnFilaPorValor[1]
+
+			if cantidadCeros == vecesMaximoEnFila {
+				uno := Valor(1)
+				valorACompletar = &uno
+			} else if cantidadUnos == vecesMaximoEnFila {
+				cero := Valor(0)
+				valorACompletar = &cero
+			}
+
+			if valorACompletar != nil {
+				for indiceColumna := 0; indiceColumna < len(fila); indiceColumna++ {
+					casilla := &fila[indiceColumna]
+
+					if !casilla.visible {
+						casilla.valor = *valorACompletar
+						casilla.visible = true
+					}
+				}
+
+				*seguirBarriendo = true
+			}
 		}
 	}
 
