@@ -22,15 +22,14 @@ func main() {
 	fmt.Println()
 	fmt.Println()
 
-	/* tableroArmado := tablero.Resolver() */
-	tablero.Resolver()
+	tableroArmado := tablero.Resolver()
 
-	/* fmt.Println()
+	fmt.Println()
 	fmt.Println()
 
 	fmt.Println("Tablero resuelto")
 	fmt.Println()
-	tableroArmado.Imprimir() */
+	tableroArmado.Imprimir()
 }
 
 func ArmarTablero() Tablero {
@@ -89,48 +88,48 @@ func (tablero Tablero) Resolver() Tablero {
 	for volverABarrer {
 		volverABarrer = false
 		nuevoTablero.ResolverDoblesSeguidos()
-		fmt.Println("Dobles seguidos")
+		/* fmt.Println("Dobles seguidos")
 		fmt.Println()
 		nuevoTablero.Imprimir()
 
 		fmt.Println()
-		fmt.Println()
+		fmt.Println() */
 
 		if nuevoTablero.EstaResuelto() {
 			break
 		}
 
 		nuevoTablero.ResolverDoblesSalteados(&volverABarrer)
-		fmt.Println("Dobles salteados")
+		/* fmt.Println("Dobles salteados")
 		fmt.Println()
 		nuevoTablero.Imprimir()
 
 		fmt.Println()
-		fmt.Println()
+		fmt.Println() */
 
 		if nuevoTablero.EstaResuelto() {
 			break
 		}
 
 		nuevoTablero.ResolverFaltaUnNumero(&volverABarrer)
-		fmt.Println("Falta un numero")
+		/* fmt.Println("Falta un numero")
 		fmt.Println()
 		nuevoTablero.Imprimir()
 
 		fmt.Println()
-		fmt.Println()
+		fmt.Println() */
 
 		if nuevoTablero.EstaResuelto() {
 			break
 		}
 
 		nuevoTablero.ResolverFaltaUnoDeUnValor(&volverABarrer)
-		fmt.Println("Falta uno de un valor")
+		/* fmt.Println("Falta uno de un valor")
 		fmt.Println()
 		nuevoTablero.Imprimir()
 
 		fmt.Println()
-		fmt.Println()
+		fmt.Println() */
 
 		if nuevoTablero.EstaResuelto() {
 			break
