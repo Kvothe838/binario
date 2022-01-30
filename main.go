@@ -22,7 +22,7 @@ func main() {
 	fmt.Println()
 	fmt.Println()
 
-	tableroArmado := tablero.Resolver()
+	tableroArmado := tablero.Resolver(true)
 
 	fmt.Println()
 	fmt.Println()
@@ -36,7 +36,7 @@ func ArmarTablero() Tablero {
 	vacio := Casilla{2, false}
 	cero := Casilla{0, true}
 	uno := Casilla{1, true}
-	var tablero Tablero = Tablero{
+	/* var tablero Tablero = Tablero{
 		{vacio, uno, uno, vacio, uno, vacio, vacio, vacio, vacio, vacio, vacio, vacio, uno, vacio},
 		{vacio, vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio, cero, vacio, vacio},
 		{uno, vacio, vacio, vacio, cero, cero, vacio, cero, cero, vacio, uno, vacio, vacio, vacio},
@@ -51,24 +51,24 @@ func ArmarTablero() Tablero {
 		{uno, vacio, vacio, cero, vacio, uno, vacio, vacio, cero, vacio, vacio, vacio, vacio, uno},
 		{vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio, cero, cero, vacio, vacio, vacio, vacio},
 		{vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio},
-	}
-
-	/* var tablero Tablero = Tablero{
-		{vacio, cero, vacio, vacio, vacio, cero, vacio, vacio, cero, vacio, vacio, vacio, vacio, vacio},
-		{vacio, uno, vacio, vacio, vacio, uno, vacio, vacio, vacio, cero, vacio, vacio, cero, vacio},
-		{cero, uno, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio, cero, vacio, vacio, vacio},
-		{vacio, cero, vacio, vacio, vacio, cero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, cero},
-		{vacio, vacio, cero, uno, uno, cero, cero, uno, cero, uno, uno, cero, cero, uno},
-		{uno, vacio, vacio, cero, vacio, uno, vacio, vacio, vacio, vacio, cero, uno, uno, cero},
-		{cero, uno, uno, cero, vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio, vacio, vacio},
-		{cero, vacio, vacio, uno, vacio, vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio},
-		{uno, cero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, cero},
-		{uno, uno, cero, cero, uno, cero, cero, cero, cero, uno, vacio, vacio, uno, vacio},
-		{cero, uno, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio},
-		{vacio, cero, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio, vacio, vacio, cero},
-		{uno, cero, cero, uno, vacio, vacio, cero, vacio, vacio, vacio, vacio, vacio, vacio, uno},
-		{vacio, uno, vacio, vacio, uno, cero, uno, vacio, cero, vacio, vacio, uno, cero, cero},
 	} */
+
+	var tablero Tablero = Tablero{
+		{vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio, vacio, vacio},
+		{cero, cero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, uno, uno, vacio},
+		{vacio, cero, vacio, vacio, vacio, cero, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio},
+		{vacio, vacio, uno, vacio, uno, vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio, vacio},
+		{vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, cero, cero, vacio, vacio, vacio, vacio},
+		{vacio, cero, vacio, vacio, vacio, uno, vacio, vacio, vacio, uno, vacio, vacio, cero, vacio},
+		{uno, cero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio},
+		{vacio, vacio, uno, vacio, uno, vacio, vacio, cero, vacio, vacio, vacio, cero, vacio, vacio},
+		{vacio, vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, uno, vacio, vacio, cero},
+		{vacio, vacio, vacio, vacio, cero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio},
+		{vacio, cero, vacio, vacio, vacio, uno, vacio, uno, vacio, vacio, vacio, vacio, cero, vacio},
+		{vacio, vacio, vacio, vacio, cero, vacio, vacio, vacio, cero, vacio, uno, vacio, vacio, cero},
+		{cero, vacio, vacio, uno, vacio, vacio, uno, uno, vacio, uno, vacio, cero, cero, vacio},
+		{cero, vacio, vacio, uno, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio},
+	}
 
 	return tablero
 }
@@ -98,55 +98,73 @@ func (casillas Casillas) Imprimir() {
 	}
 }
 
-func (tablero Tablero) Resolver() Tablero {
+func (tablero Tablero) Resolver(imprimirPasos bool) Tablero {
 	volverABarrer := true
 	nuevoTablero := tablero
 
 	for volverABarrer {
 		volverABarrer = false
 		nuevoTablero.ResolverDoblesSeguidos()
-		/* fmt.Println("Dobles seguidos")
-		fmt.Println()
-		nuevoTablero.Imprimir()
 
-		fmt.Println()
-		fmt.Println() */
+		if imprimirPasos {
+			fmt.Println("Dobles seguidos")
+			fmt.Println()
+			nuevoTablero.Imprimir()
+
+			fmt.Println()
+			fmt.Println()
+		}
 
 		if nuevoTablero.EstaResuelto() {
 			break
 		}
 
 		nuevoTablero.ResolverDoblesSalteados(&volverABarrer)
-		/* fmt.Println("Dobles salteados")
-		fmt.Println()
-		nuevoTablero.Imprimir()
 
-		fmt.Println()
-		fmt.Println() */
+		if imprimirPasos {
+			fmt.Println("Dobles salteados")
+			fmt.Println()
+			nuevoTablero.Imprimir()
+
+			fmt.Println()
+			fmt.Println()
+		}
 
 		if nuevoTablero.EstaResuelto() {
 			break
 		}
 
 		nuevoTablero.ResolverFaltaUnNumero(&volverABarrer)
-		/* fmt.Println("Falta un numero")
-		fmt.Println()
-		nuevoTablero.Imprimir()
 
-		fmt.Println()
-		fmt.Println() */
+		if imprimirPasos {
+			fmt.Println("Falta un numero")
+			fmt.Println()
+			nuevoTablero.Imprimir()
+
+			fmt.Println()
+			fmt.Println()
+		}
 
 		if nuevoTablero.EstaResuelto() {
 			break
 		}
 
 		nuevoTablero.ResolverFaltaUnoDeUnValor(&volverABarrer)
-		/* fmt.Println("Falta uno de un valor")
-		fmt.Println()
-		nuevoTablero.Imprimir()
 
-		fmt.Println()
-		fmt.Println() */
+		if imprimirPasos {
+			fmt.Println("Falta uno de un valor")
+			fmt.Println()
+			nuevoTablero.Imprimir()
+
+			fmt.Println()
+			fmt.Println()
+		}
+
+		if nuevoTablero.EstaResuelto() {
+			break
+		}
+
+		nuevoTablero.ResolverLineasDuplicadas(&volverABarrer)
 
 		if nuevoTablero.EstaResuelto() {
 			break
@@ -319,6 +337,45 @@ func (tablero *Tablero) ResolverFaltaUnoDeUnValor(volverABarrerExterno *bool) {
 	}
 }
 
+func (tablero *Tablero) ResolverLineasDuplicadas(volverABarrerExterno *bool) {
+	volverABarrer := true
+
+	for volverABarrer {
+		volverABarrer = false
+		seguirBarriendo := true
+
+		for seguirBarriendo {
+			tablero.ResolverLineasDuplicadasHorizontal(&seguirBarriendo)
+
+			if seguirBarriendo {
+				*volverABarrerExterno = true
+			}
+		}
+
+		if tablero.EstaResuelto() {
+			break
+		}
+
+		tablero.DarVuelta()
+
+		seguirBarriendo = true
+		for seguirBarriendo {
+			tablero.ResolverLineasDuplicadasHorizontal(&seguirBarriendo)
+
+			if seguirBarriendo {
+				volverABarrer = true
+				*volverABarrerExterno = true
+			}
+		}
+
+		tablero.DarVuelta()
+
+		if tablero.EstaResuelto() {
+			break
+		}
+	}
+}
+
 func (tablero Tablero) ResolverDoblesSeguidosHorizontal(seguirBarriendo *bool) Tablero {
 	*seguirBarriendo = false
 
@@ -453,6 +510,21 @@ func (tablero Tablero) ResolverFaltaUnNumeroHorizontal(seguirBarriendo *bool) Ta
 	return tablero
 }
 
+type VecesEnFilaPorValor map[Valor]int
+
+func (v VecesEnFilaPorValor) String() string {
+	stringToReturn := "{"
+
+	for k, v := range v {
+		stringToReturn += fmt.Sprintf("valor: %v | veces: %v", k, v)
+		stringToReturn += fmt.Sprintln()
+	}
+
+	stringToReturn += "}"
+
+	return stringToReturn
+}
+
 func (tablero Tablero) ObtenerVecesEnFilaPorValor(fila []Casilla) (map[Valor]int, bool) {
 	vecesEnFilaPorValor := map[Valor]int{
 		0: 0,
@@ -482,6 +554,8 @@ func (tablero Tablero) ResolverFaltaUnoDeUnValorHorizontal(seguirBarriendo *bool
 	for indiceFila := 0; indiceFila < lado; indiceFila++ {
 		fila := tablero[indiceFila]
 		vecesEnFilaPorValor, hayAlMenosUnoNoVisible := tablero.ObtenerVecesEnFilaPorValor(fila)
+		fmt.Printf("indiceFila: %v | vecesEnFilaPorValor: %+v | hayAlMenosUnoNoVisible: %v", indiceFila, vecesEnFilaPorValor, hayAlMenosUnoNoVisible)
+		fmt.Println()
 
 		if !hayAlMenosUnoNoVisible {
 			continue
@@ -544,8 +618,69 @@ func (tablero Tablero) ResolverFaltaUnoDeUnValorHorizontal(seguirBarriendo *bool
 		}
 
 		for _, indiceAACtualizar := range indicesAACtualizar {
+			*seguirBarriendo = true
 			fila[indiceAACtualizar].valor = *valorACompletar
 			fila[indiceAACtualizar].visible = true
+		}
+	}
+
+	return tablero
+}
+
+func (tablero Tablero) ResolverLineasDuplicadasHorizontal(seguirBarriendo *bool) Tablero {
+	*seguirBarriendo = false
+	lado := len(tablero)
+
+	for indiceFila := 0; indiceFila < lado; indiceFila++ {
+		var posicionNoVisibleFila *int = nil
+		fila := &tablero[indiceFila]
+
+		for indiceFilaAux := 0; indiceFilaAux < lado; indiceFilaAux++ {
+			filaAux := &tablero[indiceFilaAux]
+			var posicionNoVisibleFilaAux *int = nil
+
+			if indiceFila == indiceFilaAux {
+				continue
+			}
+
+			llenarFila := true
+
+			for indiceColumna := 0; indiceColumna < lado; indiceColumna++ {
+				celdaOriginal := (*fila)[indiceColumna]
+				celdaComparada := (*filaAux)[indiceColumna]
+
+				if posicionNoVisibleFila != nil && posicionNoVisibleFilaAux != nil {
+					llenarFila = false
+					break
+				}
+
+				indiceColumnaSinPuntero := indiceColumna
+
+				if !celdaOriginal.visible {
+					posicionNoVisibleFila = &indiceColumnaSinPuntero
+					continue
+				}
+
+				if !celdaComparada.visible {
+					posicionNoVisibleFilaAux = &indiceColumnaSinPuntero
+					continue
+				}
+
+				if celdaOriginal.valor != celdaComparada.valor {
+					llenarFila = false
+					break
+				}
+			}
+
+			if !llenarFila {
+				continue
+			}
+
+			if posicionNoVisibleFila != nil {
+				(*fila)[*posicionNoVisibleFila] = (*filaAux)[*posicionNoVisibleFila]
+			} else if posicionNoVisibleFilaAux != nil {
+				(*filaAux)[*posicionNoVisibleFilaAux] = (*fila)[*posicionNoVisibleFilaAux]
+			}
 		}
 	}
 
