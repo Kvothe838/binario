@@ -104,11 +104,18 @@ func (tablero Tablero) Resolver(imprimirPasos bool) Tablero {
 
 	for volverABarrer {
 		volverABarrer = false
-		nuevoTablero.ResolverDoblesSeguidos()
 
 		if imprimirPasos {
 			fmt.Println("Dobles seguidos")
 			fmt.Println()
+		}
+
+		nuevoTablero.ResolverDoblesSeguidos()
+
+		if imprimirPasos {
+			fmt.Println()
+			fmt.Println()
+
 			nuevoTablero.Imprimir()
 
 			fmt.Println()
@@ -117,13 +124,19 @@ func (tablero Tablero) Resolver(imprimirPasos bool) Tablero {
 
 		if nuevoTablero.EstaResuelto() {
 			break
+		}
+
+		if imprimirPasos {
+			fmt.Println("Dobles salteados")
+			fmt.Println()
 		}
 
 		nuevoTablero.ResolverDoblesSalteados(&volverABarrer)
 
 		if imprimirPasos {
-			fmt.Println("Dobles salteados")
 			fmt.Println()
+			fmt.Println()
+
 			nuevoTablero.Imprimir()
 
 			fmt.Println()
@@ -132,13 +145,19 @@ func (tablero Tablero) Resolver(imprimirPasos bool) Tablero {
 
 		if nuevoTablero.EstaResuelto() {
 			break
+		}
+
+		if imprimirPasos {
+			fmt.Println("Falta un número")
+			fmt.Println()
 		}
 
 		nuevoTablero.ResolverFaltaUnNumero(&volverABarrer)
 
 		if imprimirPasos {
-			fmt.Println("Falta un numero")
 			fmt.Println()
+			fmt.Println()
+
 			nuevoTablero.Imprimir()
 
 			fmt.Println()
@@ -147,13 +166,19 @@ func (tablero Tablero) Resolver(imprimirPasos bool) Tablero {
 
 		if nuevoTablero.EstaResuelto() {
 			break
+		}
+
+		if imprimirPasos {
+			fmt.Println("Falta uno de un valor")
+			fmt.Println()
 		}
 
 		nuevoTablero.ResolverFaltaUnoDeUnValor(&volverABarrer)
 
 		if imprimirPasos {
-			fmt.Println("Falta uno de un valor")
 			fmt.Println()
+			fmt.Println()
+
 			nuevoTablero.Imprimir()
 
 			fmt.Println()
@@ -164,7 +189,22 @@ func (tablero Tablero) Resolver(imprimirPasos bool) Tablero {
 			break
 		}
 
+		if imprimirPasos {
+			fmt.Println("Resolver líneas duplicadas")
+			fmt.Println()
+		}
+
 		nuevoTablero.ResolverLineasDuplicadas(&volverABarrer)
+
+		if imprimirPasos {
+			fmt.Println()
+			fmt.Println()
+
+			nuevoTablero.Imprimir()
+
+			fmt.Println()
+			fmt.Println()
+		}
 
 		if nuevoTablero.EstaResuelto() {
 			break
@@ -201,6 +241,7 @@ func (tablero *Tablero) ResolverDoblesSeguidos() {
 			break
 		}
 
+		fmt.Println("Doy vuelta")
 		tablero.DarVuelta()
 
 		seguirBarriendo = true
@@ -212,7 +253,8 @@ func (tablero *Tablero) ResolverDoblesSeguidos() {
 			}
 		}
 
-		tablero.DarVuelta()
+		tablero.DarVueltaAlReves()
+		fmt.Println("Vuelvo a la posición original")
 
 		if tablero.EstaResuelto() {
 			break
@@ -238,7 +280,7 @@ func (tablero *Tablero) ResolverDoblesSalteados(volverABarrerExterno *bool) {
 		if tablero.EstaResuelto() {
 			break
 		}
-
+		fmt.Println("Doy vuelta")
 		tablero.DarVuelta()
 
 		seguirBarriendo = true
@@ -250,8 +292,8 @@ func (tablero *Tablero) ResolverDoblesSalteados(volverABarrerExterno *bool) {
 				*volverABarrerExterno = true
 			}
 		}
-
-		tablero.DarVuelta()
+		fmt.Println("Vuelvo a la posición original")
+		tablero.DarVueltaAlReves()
 
 		if tablero.EstaResuelto() {
 			break
@@ -277,7 +319,7 @@ func (tablero *Tablero) ResolverFaltaUnNumero(volverABarrerExterno *bool) {
 		if tablero.EstaResuelto() {
 			break
 		}
-
+		fmt.Println("Doy vuelta")
 		tablero.DarVuelta()
 
 		seguirBarriendo = true
@@ -289,8 +331,8 @@ func (tablero *Tablero) ResolverFaltaUnNumero(volverABarrerExterno *bool) {
 				*volverABarrerExterno = true
 			}
 		}
-
-		tablero.DarVuelta()
+		fmt.Println("Vuelvo a la posición original")
+		tablero.DarVueltaAlReves()
 
 		if tablero.EstaResuelto() {
 			break
@@ -316,7 +358,7 @@ func (tablero *Tablero) ResolverFaltaUnoDeUnValor(volverABarrerExterno *bool) {
 		if tablero.EstaResuelto() {
 			break
 		}
-
+		fmt.Println("Doy vuelta")
 		tablero.DarVuelta()
 
 		seguirBarriendo = true
@@ -328,8 +370,8 @@ func (tablero *Tablero) ResolverFaltaUnoDeUnValor(volverABarrerExterno *bool) {
 				*volverABarrerExterno = true
 			}
 		}
-
-		tablero.DarVuelta()
+		fmt.Println("Vuelvo a la posición original")
+		tablero.DarVueltaAlReves()
 
 		if tablero.EstaResuelto() {
 			break
@@ -355,7 +397,7 @@ func (tablero *Tablero) ResolverLineasDuplicadas(volverABarrerExterno *bool) {
 		if tablero.EstaResuelto() {
 			break
 		}
-
+		fmt.Println("Doy vuelta")
 		tablero.DarVuelta()
 
 		seguirBarriendo = true
@@ -367,8 +409,8 @@ func (tablero *Tablero) ResolverLineasDuplicadas(volverABarrerExterno *bool) {
 				*volverABarrerExterno = true
 			}
 		}
-
-		tablero.DarVuelta()
+		fmt.Println("Vuelvo a la posición original")
+		tablero.DarVueltaAlReves()
 
 		if tablero.EstaResuelto() {
 			break
@@ -408,6 +450,8 @@ func (tablero Tablero) ResolverDoblesSeguidosHorizontal(seguirBarriendo *bool) T
 				anteriorCasilla := &fila[anteriorColumna]
 
 				if !anteriorCasilla.visible {
+					fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, anteriorColumna, opuesto)
+					fmt.Println()
 					anteriorCasilla.valor = opuesto
 					anteriorCasilla.visible = true
 					*seguirBarriendo = true
@@ -418,6 +462,8 @@ func (tablero Tablero) ResolverDoblesSeguidosHorizontal(seguirBarriendo *bool) T
 				siguienteSiguienteCasilla := &fila[siguienteColumna+1]
 
 				if !siguienteSiguienteCasilla.visible {
+					fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, siguienteColumna+1, opuesto)
+					fmt.Println()
 					siguienteSiguienteCasilla.valor = opuesto
 					siguienteSiguienteCasilla.visible = true
 					*seguirBarriendo = true
@@ -457,6 +503,8 @@ func (tablero Tablero) ResolverDoblesSalteadosHorizontal(seguirBarriendo *bool) 
 				continue
 			}
 
+			fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, siguienteColumna, opuesto)
+			fmt.Println()
 			siguienteCasilla.valor = opuesto
 			siguienteCasilla.visible = true
 			*seguirBarriendo = true
@@ -474,6 +522,8 @@ func (tablero Tablero) ResolverFaltaUnNumeroHorizontal(seguirBarriendo *bool) Ta
 	for indiceFila := 0; indiceFila < lado; indiceFila++ {
 		fila := tablero[indiceFila]
 		vecesEnFilaPorValor, hayAlMenosUnoNoVisible := tablero.ObtenerVecesEnFilaPorValor(fila)
+		/* fmt.Printf("indiceFila: %v | vecesEnFilaPorValor: %+v | hayAlMenosUnoNoVisible: %v", indiceFila, vecesEnFilaPorValor, hayAlMenosUnoNoVisible)
+		fmt.Println() */
 
 		if hayAlMenosUnoNoVisible {
 			var valorACompletar *Valor = nil
@@ -498,6 +548,9 @@ func (tablero Tablero) ResolverFaltaUnNumeroHorizontal(seguirBarriendo *bool) Ta
 				if casilla.visible {
 					continue
 				}
+
+				fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, indiceColumna, *valorACompletar)
+				fmt.Println()
 
 				casilla.valor = *valorACompletar
 				casilla.visible = true
@@ -536,6 +589,7 @@ func (tablero Tablero) ObtenerVecesEnFilaPorValor(fila []Casilla) (map[Valor]int
 
 	for indiceColumna := 0; indiceColumna < len(fila); indiceColumna++ {
 		casilla := fila[indiceColumna]
+
 		vecesEnFilaPorValor[casilla.valor]++
 
 		if !casilla.visible {
@@ -551,11 +605,13 @@ func (tablero Tablero) ResolverFaltaUnoDeUnValorHorizontal(seguirBarriendo *bool
 	lado := len(tablero)
 	vecesMaximoEnFila := lado / 2
 
+	// Se recorre cada fila
 	for indiceFila := 0; indiceFila < lado; indiceFila++ {
 		fila := tablero[indiceFila]
+		// Se obtienen la cantidad de veces que se repite cada valor, y si hay al menos un valor no visible
 		vecesEnFilaPorValor, hayAlMenosUnoNoVisible := tablero.ObtenerVecesEnFilaPorValor(fila)
-		fmt.Printf("indiceFila: %v | vecesEnFilaPorValor: %+v | hayAlMenosUnoNoVisible: %v", indiceFila, vecesEnFilaPorValor, hayAlMenosUnoNoVisible)
-		fmt.Println()
+		/* fmt.Printf("indiceFila: %v | vecesEnFilaPorValor: %+v | hayAlMenosUnoNoVisible: %v", indiceFila, vecesEnFilaPorValor, hayAlMenosUnoNoVisible)
+		fmt.Println() */
 
 		if !hayAlMenosUnoNoVisible {
 			continue
@@ -566,6 +622,8 @@ func (tablero Tablero) ResolverFaltaUnoDeUnValorHorizontal(seguirBarriendo *bool
 		cantidadUnos := vecesEnFilaPorValor[1]
 
 		if cantidadCeros == vecesMaximoEnFila-1 {
+			// Si pueden haber como máxmo 7 ceros y hay 6, significa que el algoritmo va a evaluar qué pasa si se llena con cero cada casilla.
+			// Si se llega a una contradicción, la casilla se llena de su opuesto, el 1.
 			uno := Valor(1)
 			valorACompletar = &uno
 		} else if cantidadUnos == vecesMaximoEnFila-1 {
@@ -574,51 +632,82 @@ func (tablero Tablero) ResolverFaltaUnoDeUnValorHorizontal(seguirBarriendo *bool
 		}
 
 		if valorACompletar == nil {
+			/* fmt.Printf("Rompo con fila %v", indiceFila)
+			fmt.Println() */
 			continue
 		}
 
 		opuesto := (*valorACompletar).ObtenerOpuesto()
+		// Se crea una copia de fila para que no se rellenen por error las casillas hipotéticas que usa el algoritmo.
 		filaAux := fila
 		indicesAACtualizar := make([]int, 0)
 
+		// Se recorre cada columna
 		for indiceColumna := 0; indiceColumna < lado; indiceColumna++ {
-			casilla := filaAux[indiceColumna]
+			casilla := &filaAux[indiceColumna]
 
 			if casilla.visible {
 				continue
 			}
 
-			casilla.valor = *valorACompletar
+			// Se llena la casilla del valor opuesto (el valor que le falta una repetición) y luego se llenan todas las demás del valor a completar.
+			casilla.valor = opuesto
 
 			for indiceColumnaAux := 0; indiceColumnaAux < lado; indiceColumnaAux++ {
-				casillaAux := filaAux[indiceColumnaAux]
+				casillaAux := &filaAux[indiceColumnaAux]
 
 				if indiceColumnaAux == indiceColumna || casillaAux.visible {
 					continue
 				}
 
-				casillaAux.valor = opuesto
+				casillaAux.valor = *valorACompletar
 			}
 
+			// Se van a contar la cantidad del valor opuesto que existan seguidos en la fila. Si son más de 2, quiere decir que es una combinación
+			// imposible. Entonces, si al haber llenado la original el opuesto se genera una combinación imposible, quiere decir que la original va
+			// del valor a completar.
 			cantidadSeguidos := 0
 
+			/* fmt.Printf("filaAux: %+v", Casillas(filaAux))
+			fmt.Println() */
 			for indiceColumnaAux := 0; indiceColumnaAux < lado; indiceColumnaAux++ {
 				casillaAux := filaAux[indiceColumnaAux]
 
-				if casillaAux.valor == *valorACompletar {
+				// Contar como seguido si el valor es el buscado (el valor a completar) y la columna no es la primera (ya que sino no se podría
+				// acceder a [indiceColumnaAux-1]) y el valor anterior es igual al actual.
+				if casillaAux.valor == *valorACompletar && indiceColumnaAux != 0 && filaAux[indiceColumnaAux-1].valor == *valorACompletar {
 					cantidadSeguidos++
+				} else {
+					cantidadSeguidos = 0
+				}
+
+				// Si ya van más de 2 seguidos, añadir la columna como para actualizar con el valor a completar y salir del loop ya que no hace falta
+				// ver si hay más seguidos, la contradicción está cumplida.
+				if cantidadSeguidos > 2 {
+					indicesAACtualizar = append(indicesAACtualizar, indiceColumna)
+					break
 				}
 			}
 
-			if cantidadSeguidos > 2 {
-				indicesAACtualizar = append(indicesAACtualizar, indiceColumna)
+			for indiceColumnaAux := 0; indiceColumnaAux < lado; indiceColumnaAux++ {
+				casillaAux := &filaAux[indiceColumnaAux]
+
+				if indiceColumnaAux == indiceColumna || casillaAux.visible {
+					continue
+				}
+
+				casillaAux.valor = 2
 			}
 
 			filaAux = fila
 		}
 
 		for _, indiceAACtualizar := range indicesAACtualizar {
+			/* fmt.Printf("Índice a actualizar: %v", indiceAACtualizar)
+			fmt.Println() */
 			*seguirBarriendo = true
+			fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, indiceAACtualizar, *valorACompletar)
+			fmt.Println()
 			fila[indiceAACtualizar].valor = *valorACompletar
 			fila[indiceAACtualizar].visible = true
 		}
@@ -627,17 +716,24 @@ func (tablero Tablero) ResolverFaltaUnoDeUnValorHorizontal(seguirBarriendo *bool
 	return tablero
 }
 
+// Dos líneas no pueden tener los mismos números en las mismas posiciones. Tienen que diferir en, por lo menos, dos celdas.
 func (tablero Tablero) ResolverLineasDuplicadasHorizontal(seguirBarriendo *bool) Tablero {
 	*seguirBarriendo = false
 	lado := len(tablero)
 
+	// Recorro cada fila
 	for indiceFila := 0; indiceFila < lado; indiceFila++ {
-		var posicionNoVisibleFila *int = nil
+		// Acá voy a guardar la posición en columna de la celda no visible en la fila original (como máximo, solo pueden diferir en una posición)
+		var posicionNoVisibleFila1 *int = nil
+		var posicionNoVisibleFila2 *int = nil
 		fila := &tablero[indiceFila]
 
+		// Recorro cada una de las demás filas (todas excepto la que ya estoy recorriendo)
 		for indiceFilaAux := 0; indiceFilaAux < lado; indiceFilaAux++ {
 			filaAux := &tablero[indiceFilaAux]
-			var posicionNoVisibleFilaAux *int = nil
+			// Acá voy a guardar las posiciones en columnas de las celdas no visibles en la fila comparada
+			var posicionNoVisibleFilaAux1 *int = nil
+			var posicionNoVisibleFilaAux2 *int = nil
 
 			if indiceFila == indiceFilaAux {
 				continue
@@ -645,30 +741,57 @@ func (tablero Tablero) ResolverLineasDuplicadasHorizontal(seguirBarriendo *bool)
 
 			llenarFila := true
 
+			// Recorro cada columna, ya que voy a comparar dos celdas con la misma posición de columna pero en diferentes filas
 			for indiceColumna := 0; indiceColumna < lado; indiceColumna++ {
 				celdaOriginal := (*fila)[indiceColumna]
 				celdaComparada := (*filaAux)[indiceColumna]
 
-				if posicionNoVisibleFila != nil && posicionNoVisibleFilaAux != nil {
-					llenarFila = false
-					break
-				}
-
 				indiceColumnaSinPuntero := indiceColumna
 
-				if !celdaOriginal.visible {
-					posicionNoVisibleFila = &indiceColumnaSinPuntero
-					continue
-				}
-
-				if !celdaComparada.visible {
-					posicionNoVisibleFilaAux = &indiceColumnaSinPuntero
-					continue
-				}
-
-				if celdaOriginal.valor != celdaComparada.valor {
+				// Si ambas celdas son visibles y sus valores son diferentes, entonces la comparación ya no puede realizarse
+				if celdaOriginal.visible && celdaComparada.visible && celdaOriginal.valor != celdaComparada.valor {
 					llenarFila = false
 					break
+				}
+
+				if !celdaOriginal.visible || !celdaComparada.visible {
+					// Si ambos pares se llenaron, quiere decir que la comparación ya no puede realizarse
+					if ObtenerCantidadNil(posicionNoVisibleFila1, posicionNoVisibleFila2,
+						posicionNoVisibleFilaAux1, posicionNoVisibleFilaAux2) > 2 {
+						llenarFila = false
+						break
+					}
+
+					if !celdaOriginal.visible {
+						// Si la celda original no es visible, entonces hay que ver si es la primera columna en no ser visible, la segunda o la tercera.
+						// En caso de ser la priemra va a la fila1, en caso de ser la segunda va a la fila2 y en caso de ser la tercera se rompe el ciclo
+						// ya que no se pueden tener más de dos pares de celdas con una no visible
+						if posicionNoVisibleFila1 == nil && posicionNoVisibleFilaAux1 == nil {
+							posicionNoVisibleFila1 = &indiceColumnaSinPuntero
+							continue
+						} else if posicionNoVisibleFila2 == nil && posicionNoVisibleFilaAux2 == nil {
+							posicionNoVisibleFila2 = &indiceColumnaSinPuntero
+							continue
+						} else {
+							llenarFila = false
+							break
+						}
+					} else if !celdaComparada.visible {
+						// Misma lógica que con la original pero se guardan en las aux.
+						// Importante que sea un else if, ya que no se puede dar la combinación de dos celdas no visibles para la misma fila, esto no
+						// da ninguna información a la hora de deducir valores
+						if posicionNoVisibleFila1 == nil && posicionNoVisibleFilaAux1 == nil {
+							posicionNoVisibleFilaAux1 = &indiceColumnaSinPuntero
+							continue
+						} else if posicionNoVisibleFila2 == nil && posicionNoVisibleFilaAux2 == nil {
+							posicionNoVisibleFilaAux2 = &indiceColumnaSinPuntero
+							continue
+						} else {
+							llenarFila = false
+							break
+						}
+					}
+
 				}
 			}
 
@@ -676,15 +799,51 @@ func (tablero Tablero) ResolverLineasDuplicadasHorizontal(seguirBarriendo *bool)
 				continue
 			}
 
-			if posicionNoVisibleFila != nil {
-				(*fila)[*posicionNoVisibleFila] = (*filaAux)[*posicionNoVisibleFila]
-			} else if posicionNoVisibleFilaAux != nil {
-				(*filaAux)[*posicionNoVisibleFilaAux] = (*fila)[*posicionNoVisibleFilaAux]
+			if posicionNoVisibleFila1 != nil || posicionNoVisibleFilaAux1 != nil {
+				*seguirBarriendo = true
+				if posicionNoVisibleFila1 != nil {
+					fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, *posicionNoVisibleFila1, (*filaAux)[*posicionNoVisibleFila1].valor)
+					fmt.Println()
+					(*fila)[*posicionNoVisibleFila1].valor = (*filaAux)[*posicionNoVisibleFila1].valor.ObtenerOpuesto()
+					(*fila)[*posicionNoVisibleFila1].visible = true
+				} else if posicionNoVisibleFilaAux1 != nil {
+					fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, *posicionNoVisibleFilaAux1, (*filaAux)[*posicionNoVisibleFilaAux1].valor)
+					fmt.Println()
+					(*fila)[*posicionNoVisibleFilaAux1].valor = (*filaAux)[*posicionNoVisibleFilaAux1].valor.ObtenerOpuesto()
+					(*fila)[*posicionNoVisibleFilaAux1].visible = true
+				}
+			}
+
+			if posicionNoVisibleFila2 != nil || posicionNoVisibleFilaAux2 != nil {
+				*seguirBarriendo = true
+				if posicionNoVisibleFila2 != nil {
+					fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, *posicionNoVisibleFila2, (*filaAux)[*posicionNoVisibleFila2].valor)
+					fmt.Println()
+					(*fila)[*posicionNoVisibleFila2].valor = (*filaAux)[*posicionNoVisibleFila2].valor.ObtenerOpuesto()
+					(*fila)[*posicionNoVisibleFila2].visible = true
+				} else if posicionNoVisibleFilaAux2 != nil {
+					fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, *posicionNoVisibleFilaAux2, (*filaAux)[*posicionNoVisibleFilaAux2].valor)
+					fmt.Println()
+					(*fila)[*posicionNoVisibleFilaAux2].valor = (*filaAux)[*posicionNoVisibleFilaAux2].valor.ObtenerOpuesto()
+					(*fila)[*posicionNoVisibleFilaAux2].visible = true
+				}
 			}
 		}
 	}
 
 	return tablero
+}
+
+func ObtenerCantidadNil(elementos ...*int) int {
+	cantidad := 0
+
+	for _, elemento := range elementos {
+		if elemento != nil {
+			cantidad++
+		}
+	}
+
+	return cantidad
 }
 
 func (valor Valor) ObtenerOpuesto() Valor {
@@ -697,6 +856,7 @@ func (valor Valor) ObtenerOpuesto() Valor {
 	return opuestos[valor]
 }
 
+// Da una vuelta de 90° antihorario
 func (tablero *Tablero) DarVuelta() {
 	lado := len(*tablero)
 	nuevoTablero := make(Tablero, lado)
@@ -710,9 +870,17 @@ func (tablero *Tablero) DarVuelta() {
 		columnas := len((*tablero)[i])
 
 		for j := 0; j < columnas; j++ {
-			nuevoTablero[j][i] = (*tablero)[i][j]
+			nuevoTablero[filas-j-1][i] = (*tablero)[i][j]
 		}
 	}
 
 	*tablero = nuevoTablero
+}
+
+// Da una vuelta de 90° horario
+// TODO: Optimizar para que en vez de girar 3 veces antihorario, gire una sola horario
+func (tablero *Tablero) DarVueltaAlReves() {
+	for i := 0; i < 3; i++ {
+		tablero.DarVuelta()
+	}
 }
