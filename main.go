@@ -86,15 +86,32 @@ func (casillas Casillas) Imprimir() {
 		fmt.Print("|")
 
 		casilla := casillas[indiceCasilla]
-		if casilla.visible {
-			fmt.Print(casilla.valor)
-		} else {
-			fmt.Print(" ")
-		}
+		casilla.Imprimir()
 
 		if indiceCasilla == len(casillas)-1 {
 			fmt.Print("|")
 		}
+	}
+}
+
+func (casillas Casillas) ImprimirTodo() {
+	for indiceCasilla := 0; indiceCasilla < len(casillas); indiceCasilla++ {
+		fmt.Print("|")
+
+		casilla := casillas[indiceCasilla]
+		fmt.Print(casilla.valor)
+
+		if indiceCasilla == len(casillas)-1 {
+			fmt.Print("|")
+		}
+	}
+}
+
+func (casilla Casilla) Imprimir() {
+	if casilla.visible {
+		fmt.Print(casilla.valor)
+	} else {
+		fmt.Print(" ")
 	}
 }
 
@@ -582,7 +599,6 @@ func (tablero Tablero) ObtenerVecesEnFilaPorValor(fila []Casilla) (map[Valor]int
 	vecesEnFilaPorValor := map[Valor]int{
 		0: 0,
 		1: 0,
-		2: 0,
 	}
 
 	hayAlMenosUnoNoVisible := false
@@ -590,11 +606,12 @@ func (tablero Tablero) ObtenerVecesEnFilaPorValor(fila []Casilla) (map[Valor]int
 	for indiceColumna := 0; indiceColumna < len(fila); indiceColumna++ {
 		casilla := fila[indiceColumna]
 
-		vecesEnFilaPorValor[casilla.valor]++
-
 		if !casilla.visible {
 			hayAlMenosUnoNoVisible = true
+			continue
 		}
+
+		vecesEnFilaPorValor[casilla.valor]++
 	}
 
 	return vecesEnFilaPorValor, hayAlMenosUnoNoVisible
@@ -642,6 +659,10 @@ func (tablero Tablero) ResolverFaltaUnoDeUnValorHorizontal(seguirBarriendo *bool
 		filaAux := fila
 		indicesAACtualizar := make([]int, 0)
 
+		fmt.Print("línea principio: ")
+		Casillas(filaAux).Imprimir()
+		fmt.Println()
+
 		// Se recorre cada columna
 		for indiceColumna := 0; indiceColumna < lado; indiceColumna++ {
 			casilla := &filaAux[indiceColumna]
@@ -656,17 +677,28 @@ func (tablero Tablero) ResolverFaltaUnoDeUnValorHorizontal(seguirBarriendo *bool
 			for indiceColumnaAux := 0; indiceColumnaAux < lado; indiceColumnaAux++ {
 				casillaAux := &filaAux[indiceColumnaAux]
 
+				/* fmt.Println("Paso por casilla: ")
+				casillaAux.Imprimir()
+				fmt.Println() */
+
 				if indiceColumnaAux == indiceColumna || casillaAux.visible {
+					/* fmt.Println("continúo") */
 					continue
 				}
+
+				/* fmt.Printf("Valor: %v", *valorACompletar) */
 
 				casillaAux.valor = *valorACompletar
 			}
 
+			/* fmt.Print("línea intermedia: ")
+			Casillas(filaAux).ImprimirTodo()
+			fmt.Println() */
+
 			// Se van a contar la cantidad del valor opuesto que existan seguidos en la fila. Si son más de 2, quiere decir que es una combinación
 			// imposible. Entonces, si al haber llenado la original el opuesto se genera una combinación imposible, quiere decir que la original va
 			// del valor a completar.
-			cantidadSeguidos := 0
+			cantidadSeguidos := 1
 
 			/* fmt.Printf("filaAux: %+v", Casillas(filaAux))
 			fmt.Println() */
@@ -678,7 +710,7 @@ func (tablero Tablero) ResolverFaltaUnoDeUnValorHorizontal(seguirBarriendo *bool
 				if casillaAux.valor == *valorACompletar && indiceColumnaAux != 0 && filaAux[indiceColumnaAux-1].valor == *valorACompletar {
 					cantidadSeguidos++
 				} else {
-					cantidadSeguidos = 0
+					cantidadSeguidos = 1
 				}
 
 				// Si ya van más de 2 seguidos, añadir la columna como para actualizar con el valor a completar y salir del loop ya que no hace falta
@@ -700,14 +732,17 @@ func (tablero Tablero) ResolverFaltaUnoDeUnValorHorizontal(seguirBarriendo *bool
 			}
 
 			filaAux = fila
+			/* fmt.Print("línea reseteada: ")
+			Casillas(filaAux).Imprimir()
+			fmt.Println() */
 		}
 
 		for _, indiceAACtualizar := range indicesAACtualizar {
 			/* fmt.Printf("Índice a actualizar: %v", indiceAACtualizar)
 			fmt.Println() */
 			*seguirBarriendo = true
-			fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, indiceAACtualizar, *valorACompletar)
-			fmt.Println()
+			/* fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, indiceAACtualizar, *valorACompletar)
+			fmt.Println() */
 			fila[indiceAACtualizar].valor = *valorACompletar
 			fila[indiceAACtualizar].visible = true
 		}
