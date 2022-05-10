@@ -6,7 +6,7 @@ Binario también conocido como Takuzu es un puzzle de lógica con reglas simples
 
 Las reglas son simples. Binario se juega en una cuadrícula rectangular sin ningún tamaño estandard. Algunos recuadros empiezan rellenos con ceros o unos. El resto de recuadros están vacíos. El objetivo es poner los ceros o unos en todos los recuadros tal que:
 1. Cada fila y cada columna debe contener el mismo número de unos y ceros.
-2. Más de dos números iguales del mismo color no pueden ser adyacentes.
+2. Más de dos números iguales no pueden ser adyacentes.
 3. Cada fila y columna es única.
 
 ## Solución
