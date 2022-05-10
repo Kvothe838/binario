@@ -13,6 +13,8 @@ type Tablero [][]Casilla
 type Casillas []Casilla
 type Girable func(*bool) Tablero
 
+var imprimirPasos bool
+
 func main() {
 	tablero := ArmarTablero()
 	fmt.Println("Tablero inicial")
@@ -21,8 +23,8 @@ func main() {
 
 	fmt.Println()
 	fmt.Println()
-
-	tableroArmado := tablero.Resolver(true)
+	imprimirPasos = false
+	tableroArmado := tablero.Resolver()
 
 	fmt.Println()
 	fmt.Println()
@@ -36,7 +38,7 @@ func ArmarTablero() Tablero {
 	vacio := Casilla{2, false}
 	cero := Casilla{0, true}
 	uno := Casilla{1, true}
-	/* var tablero Tablero = Tablero{
+	var tablero Tablero = Tablero{
 		{vacio, uno, uno, vacio, uno, vacio, vacio, vacio, vacio, vacio, vacio, vacio, uno, vacio},
 		{vacio, vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio, cero, vacio, vacio},
 		{uno, vacio, vacio, vacio, cero, cero, vacio, cero, cero, vacio, uno, vacio, vacio, vacio},
@@ -51,9 +53,9 @@ func ArmarTablero() Tablero {
 		{uno, vacio, vacio, cero, vacio, uno, vacio, vacio, cero, vacio, vacio, vacio, vacio, uno},
 		{vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio, cero, cero, vacio, vacio, vacio, vacio},
 		{vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio},
-	} */
+	}
 
-	var tablero Tablero = Tablero{
+	/* var tablero Tablero = Tablero{
 		{vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio, vacio, vacio},
 		{cero, cero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, uno, uno, vacio},
 		{vacio, cero, vacio, vacio, vacio, cero, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio},
@@ -68,7 +70,7 @@ func ArmarTablero() Tablero {
 		{vacio, vacio, vacio, vacio, cero, vacio, vacio, vacio, cero, vacio, uno, vacio, vacio, cero},
 		{cero, vacio, vacio, uno, vacio, vacio, uno, uno, vacio, uno, vacio, cero, cero, vacio},
 		{cero, vacio, vacio, uno, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio},
-	}
+	} */
 
 	return tablero
 }
@@ -115,7 +117,7 @@ func (casilla Casilla) Imprimir() {
 	}
 }
 
-func (tablero Tablero) Resolver(imprimirPasos bool) Tablero {
+func (tablero Tablero) Resolver() Tablero {
 	volverABarrer := true
 	nuevoTablero := tablero
 
@@ -258,7 +260,10 @@ func (tablero *Tablero) ResolverDoblesSeguidos() {
 			break
 		}
 
-		fmt.Println("Doy vuelta")
+		if imprimirPasos {
+			fmt.Println("Doy vuelta")
+		}
+
 		tablero.DarVuelta()
 
 		seguirBarriendo = true
@@ -270,8 +275,10 @@ func (tablero *Tablero) ResolverDoblesSeguidos() {
 			}
 		}
 
-		tablero.DarVueltaAlReves()
-		fmt.Println("Vuelvo a la posición original")
+		if imprimirPasos {
+			tablero.DarVueltaAlReves()
+			fmt.Println("Vuelvo a la posición original")
+		}
 
 		if tablero.EstaResuelto() {
 			break
@@ -297,7 +304,11 @@ func (tablero *Tablero) ResolverDoblesSalteados(volverABarrerExterno *bool) {
 		if tablero.EstaResuelto() {
 			break
 		}
-		fmt.Println("Doy vuelta")
+
+		if imprimirPasos {
+			fmt.Println("Doy vuelta")
+		}
+
 		tablero.DarVuelta()
 
 		seguirBarriendo = true
@@ -309,7 +320,10 @@ func (tablero *Tablero) ResolverDoblesSalteados(volverABarrerExterno *bool) {
 				*volverABarrerExterno = true
 			}
 		}
-		fmt.Println("Vuelvo a la posición original")
+
+		if imprimirPasos {
+			fmt.Println("Vuelvo a la posición original")
+		}
 		tablero.DarVueltaAlReves()
 
 		if tablero.EstaResuelto() {
@@ -336,7 +350,11 @@ func (tablero *Tablero) ResolverFaltaUnNumero(volverABarrerExterno *bool) {
 		if tablero.EstaResuelto() {
 			break
 		}
-		fmt.Println("Doy vuelta")
+
+		if imprimirPasos {
+			fmt.Println("Doy vuelta")
+		}
+
 		tablero.DarVuelta()
 
 		seguirBarriendo = true
@@ -348,7 +366,11 @@ func (tablero *Tablero) ResolverFaltaUnNumero(volverABarrerExterno *bool) {
 				*volverABarrerExterno = true
 			}
 		}
-		fmt.Println("Vuelvo a la posición original")
+
+		if imprimirPasos {
+			fmt.Println("Vuelvo a la posición original")
+		}
+
 		tablero.DarVueltaAlReves()
 
 		if tablero.EstaResuelto() {
@@ -375,7 +397,11 @@ func (tablero *Tablero) ResolverFaltaUnoDeUnValor(volverABarrerExterno *bool) {
 		if tablero.EstaResuelto() {
 			break
 		}
-		fmt.Println("Doy vuelta")
+
+		if imprimirPasos {
+			fmt.Println("Doy vuelta")
+		}
+
 		tablero.DarVuelta()
 
 		seguirBarriendo = true
@@ -387,7 +413,11 @@ func (tablero *Tablero) ResolverFaltaUnoDeUnValor(volverABarrerExterno *bool) {
 				*volverABarrerExterno = true
 			}
 		}
-		fmt.Println("Vuelvo a la posición original")
+
+		if imprimirPasos {
+			fmt.Println("Vuelvo a la posición original")
+		}
+
 		tablero.DarVueltaAlReves()
 
 		if tablero.EstaResuelto() {
@@ -414,7 +444,11 @@ func (tablero *Tablero) ResolverLineasDuplicadas(volverABarrerExterno *bool) {
 		if tablero.EstaResuelto() {
 			break
 		}
-		fmt.Println("Doy vuelta")
+
+		if imprimirPasos {
+			fmt.Println("Doy vuelta")
+		}
+
 		tablero.DarVuelta()
 
 		seguirBarriendo = true
@@ -426,7 +460,11 @@ func (tablero *Tablero) ResolverLineasDuplicadas(volverABarrerExterno *bool) {
 				*volverABarrerExterno = true
 			}
 		}
-		fmt.Println("Vuelvo a la posición original")
+
+		if imprimirPasos {
+			fmt.Println("Vuelvo a la posición original")
+		}
+
 		tablero.DarVueltaAlReves()
 
 		if tablero.EstaResuelto() {
@@ -467,8 +505,10 @@ func (tablero Tablero) ResolverDoblesSeguidosHorizontal(seguirBarriendo *bool) T
 				anteriorCasilla := &fila[anteriorColumna]
 
 				if !anteriorCasilla.visible {
-					fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, anteriorColumna, opuesto)
-					fmt.Println()
+					if imprimirPasos {
+						fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, anteriorColumna, opuesto)
+						fmt.Println()
+					}
 					anteriorCasilla.valor = opuesto
 					anteriorCasilla.visible = true
 					*seguirBarriendo = true
@@ -479,8 +519,10 @@ func (tablero Tablero) ResolverDoblesSeguidosHorizontal(seguirBarriendo *bool) T
 				siguienteSiguienteCasilla := &fila[siguienteColumna+1]
 
 				if !siguienteSiguienteCasilla.visible {
-					fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, siguienteColumna+1, opuesto)
-					fmt.Println()
+					if imprimirPasos {
+						fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, siguienteColumna+1, opuesto)
+						fmt.Println()
+					}
 					siguienteSiguienteCasilla.valor = opuesto
 					siguienteSiguienteCasilla.visible = true
 					*seguirBarriendo = true
@@ -520,8 +562,10 @@ func (tablero Tablero) ResolverDoblesSalteadosHorizontal(seguirBarriendo *bool) 
 				continue
 			}
 
-			fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, siguienteColumna, opuesto)
-			fmt.Println()
+			if imprimirPasos {
+				fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, siguienteColumna, opuesto)
+				fmt.Println()
+			}
 			siguienteCasilla.valor = opuesto
 			siguienteCasilla.visible = true
 			*seguirBarriendo = true
@@ -566,8 +610,10 @@ func (tablero Tablero) ResolverFaltaUnNumeroHorizontal(seguirBarriendo *bool) Ta
 					continue
 				}
 
-				fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, indiceColumna, *valorACompletar)
-				fmt.Println()
+				if imprimirPasos {
+					fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, indiceColumna, *valorACompletar)
+					fmt.Println()
+				}
 
 				casilla.valor = *valorACompletar
 				casilla.visible = true
@@ -659,9 +705,11 @@ func (tablero Tablero) ResolverFaltaUnoDeUnValorHorizontal(seguirBarriendo *bool
 		filaAux := fila
 		indicesAACtualizar := make([]int, 0)
 
-		fmt.Print("línea principio: ")
-		Casillas(filaAux).Imprimir()
-		fmt.Println()
+		if imprimirPasos {
+			fmt.Print("línea principio: ")
+			Casillas(filaAux).Imprimir()
+			fmt.Println()
+		}
 
 		// Se recorre cada columna
 		for indiceColumna := 0; indiceColumna < lado; indiceColumna++ {
