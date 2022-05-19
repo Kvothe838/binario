@@ -4,239 +4,239 @@ import (
 	"fmt"
 )
 
-type Valor uint8
-type Casilla struct {
-	valor   Valor
+type Value uint8
+type Box struct {
+	value   Value
 	visible bool
 }
-type Tablero [][]Casilla
-type Casillas []Casilla
-type Girable func(*bool) Tablero
+type Grid [][]Box
+type Boxes []Box
+type Rotable func(*bool) Grid
 
-var imprimirPasos bool
+var printSteps bool
 
 func main() {
-	tablero := ArmarTablero()
-	fmt.Println("Tablero inicial")
+	grid := BuildGrid()
+	fmt.Println("Initial grid")
 	fmt.Println()
-	tablero.Imprimir()
+	grid.Print()
 
 	fmt.Println()
 	fmt.Println()
-	imprimirPasos = false
-	tableroArmado := tablero.Resolver()
+	printSteps = false
+	solvedGrid := grid.Solve()
 
 	fmt.Println()
 	fmt.Println()
 
-	fmt.Println("Tablero resuelto")
+	fmt.Println("Solved grid")
 	fmt.Println()
-	tableroArmado.Imprimir()
+	solvedGrid.Print()
 }
 
-func ArmarTablero() Tablero {
-	vacio := Casilla{2, false}
-	cero := Casilla{0, true}
-	uno := Casilla{1, true}
-	var tablero Tablero = Tablero{
-		{vacio, uno, uno, vacio, uno, vacio, vacio, vacio, vacio, vacio, vacio, vacio, uno, vacio},
-		{vacio, vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio, cero, vacio, vacio},
-		{uno, vacio, vacio, vacio, cero, cero, vacio, cero, cero, vacio, uno, vacio, vacio, vacio},
-		{vacio, cero, cero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, uno},
-		{vacio, cero, vacio, vacio, vacio, cero, vacio, vacio, cero, vacio, vacio, vacio, vacio, vacio},
-		{vacio, vacio, vacio, vacio, vacio, cero, vacio, vacio, vacio, vacio, uno, uno, vacio, vacio},
-		{cero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio},
-		{vacio, cero, vacio, vacio, uno, vacio, cero, vacio, cero, vacio, vacio, cero, vacio, vacio},
-		{uno, vacio, vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio, vacio, vacio, uno, vacio},
-		{vacio, vacio, uno, uno, vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio},
-		{vacio, cero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, uno},
-		{uno, vacio, vacio, cero, vacio, uno, vacio, vacio, cero, vacio, vacio, vacio, vacio, uno},
-		{vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio, cero, cero, vacio, vacio, vacio, vacio},
-		{vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio},
+func BuildGrid() Grid {
+	empty := Box{2, false}
+	zero := Box{0, true}
+	one := Box{1, true}
+	var grid Grid = Grid{
+		{empty, one, one, empty, one, empty, empty, empty, empty, empty, empty, empty, one, empty},
+		{empty, empty, empty, empty, empty, empty, one, empty, empty, empty, empty, zero, empty, empty},
+		{one, empty, empty, empty, zero, zero, empty, zero, zero, empty, one, empty, empty, empty},
+		{empty, zero, zero, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, one},
+		{empty, zero, empty, empty, empty, zero, empty, empty, zero, empty, empty, empty, empty, empty},
+		{empty, empty, empty, empty, empty, zero, empty, empty, empty, empty, one, one, empty, empty},
+		{zero, empty, empty, empty, empty, empty, empty, empty, empty, empty, one, empty, empty, empty},
+		{empty, zero, empty, empty, one, empty, zero, empty, zero, empty, empty, zero, empty, empty},
+		{one, empty, empty, empty, empty, empty, empty, empty, zero, empty, empty, empty, one, empty},
+		{empty, empty, one, one, empty, empty, empty, empty, empty, one, empty, empty, empty, empty},
+		{empty, zero, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, empty, one},
+		{one, empty, empty, zero, empty, one, empty, empty, zero, empty, empty, empty, empty, one},
+		{empty, empty, empty, empty, empty, empty, zero, empty, zero, zero, empty, empty, empty, empty},
+		{empty, empty, empty, empty, empty, one, empty, empty, empty, empty, empty, one, empty, empty},
 	}
 
-	/* var tablero Tablero = Tablero{
-		{vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio, vacio, vacio},
-		{cero, cero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, uno, uno, vacio},
-		{vacio, cero, vacio, vacio, vacio, cero, vacio, vacio, vacio, uno, vacio, vacio, vacio, vacio},
-		{vacio, vacio, uno, vacio, uno, vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio, vacio},
-		{vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, cero, cero, vacio, vacio, vacio, vacio},
-		{vacio, cero, vacio, vacio, vacio, uno, vacio, vacio, vacio, uno, vacio, vacio, cero, vacio},
-		{uno, cero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio},
-		{vacio, vacio, uno, vacio, uno, vacio, vacio, cero, vacio, vacio, vacio, cero, vacio, vacio},
-		{vacio, vacio, vacio, vacio, vacio, vacio, uno, vacio, vacio, vacio, uno, vacio, vacio, cero},
-		{vacio, vacio, vacio, vacio, cero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio},
-		{vacio, cero, vacio, vacio, vacio, uno, vacio, uno, vacio, vacio, vacio, vacio, cero, vacio},
-		{vacio, vacio, vacio, vacio, cero, vacio, vacio, vacio, cero, vacio, uno, vacio, vacio, cero},
-		{cero, vacio, vacio, uno, vacio, vacio, uno, uno, vacio, uno, vacio, cero, cero, vacio},
-		{cero, vacio, vacio, uno, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, cero, vacio},
+	/* var grid Tablero = Tablero{
+		{vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, zero, vacio, vacio, vacio},
+		{zero, zero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, one, one, vacio},
+		{vacio, zero, vacio, vacio, vacio, zero, vacio, vacio, vacio, one, vacio, vacio, vacio, vacio},
+		{vacio, vacio, one, vacio, one, vacio, vacio, vacio, vacio, vacio, vacio, zero, vacio, vacio},
+		{vacio, vacio, vacio, vacio, one, vacio, vacio, vacio, zero, zero, vacio, vacio, vacio, vacio},
+		{vacio, zero, vacio, vacio, vacio, one, vacio, vacio, vacio, one, vacio, vacio, zero, vacio},
+		{one, zero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio},
+		{vacio, vacio, one, vacio, one, vacio, vacio, zero, vacio, vacio, vacio, zero, vacio, vacio},
+		{vacio, vacio, vacio, vacio, vacio, vacio, one, vacio, vacio, vacio, one, vacio, vacio, zero},
+		{vacio, vacio, vacio, vacio, zero, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio},
+		{vacio, zero, vacio, vacio, vacio, one, vacio, one, vacio, vacio, vacio, vacio, zero, vacio},
+		{vacio, vacio, vacio, vacio, zero, vacio, vacio, vacio, zero, vacio, one, vacio, vacio, zero},
+		{zero, vacio, vacio, one, vacio, vacio, one, one, vacio, one, vacio, zero, zero, vacio},
+		{zero, vacio, vacio, one, vacio, vacio, vacio, vacio, vacio, vacio, vacio, vacio, zero, vacio},
 	} */
 
-	return tablero
+	return grid
 }
 
-func (tablero Tablero) Imprimir() {
-	for i := 0; i < len(tablero); i++ {
-		fila := Casillas(tablero[i])
-		fila.Imprimir()
+func (grid Grid) Print() {
+	for i := 0; i < len(grid); i++ {
+		row := Boxes(grid[i])
+		row.Print()
 		fmt.Println("")
 	}
 }
 
-func (casillas Casillas) Imprimir() {
-	for indiceCasilla := 0; indiceCasilla < len(casillas); indiceCasilla++ {
+func (boxes Boxes) Print() {
+	for boxIndex := 0; boxIndex < len(boxes); boxIndex++ {
 		fmt.Print("|")
 
-		casilla := casillas[indiceCasilla]
-		casilla.Imprimir()
+		box := boxes[boxIndex]
+		box.Print()
 
-		if indiceCasilla == len(casillas)-1 {
+		if boxIndex == len(boxes)-1 {
 			fmt.Print("|")
 		}
 	}
 }
 
-func (casillas Casillas) ImprimirTodo() {
-	for indiceCasilla := 0; indiceCasilla < len(casillas); indiceCasilla++ {
+func (boxes Boxes) PrintAll() {
+	for boxIndex := 0; boxIndex < len(boxes); boxIndex++ {
 		fmt.Print("|")
 
-		casilla := casillas[indiceCasilla]
-		fmt.Print(casilla.valor)
+		box := boxes[boxIndex]
+		fmt.Print(box.value)
 
-		if indiceCasilla == len(casillas)-1 {
+		if boxIndex == len(boxes)-1 {
 			fmt.Print("|")
 		}
 	}
 }
 
-func (casilla Casilla) Imprimir() {
-	if casilla.visible {
-		fmt.Print(casilla.valor)
+func (box Box) Print() {
+	if box.visible {
+		fmt.Print(box.value)
 	} else {
 		fmt.Print(" ")
 	}
 }
 
-func (tablero Tablero) Resolver() Tablero {
-	volverABarrer := true
-	nuevoTablero := tablero
+func (grid Grid) Solve() Grid {
+	iterateAgain := true
+	newGrid := grid
 
-	for volverABarrer {
-		volverABarrer = false
+	for iterateAgain {
+		iterateAgain = false
 
-		if imprimirPasos {
-			fmt.Println("Dobles seguidos")
+		if printSteps {
+			fmt.Println("Doubles in a row")
 			fmt.Println()
 		}
 
-		nuevoTablero.ResolverDoblesSeguidos()
+		newGrid.SolveDoublesInARow()
 
-		if imprimirPasos {
+		if printSteps {
 			fmt.Println()
 			fmt.Println()
 
-			nuevoTablero.Imprimir()
+			newGrid.Print()
 
 			fmt.Println()
 			fmt.Println()
 		}
 
-		if nuevoTablero.EstaResuelto() {
+		if newGrid.IsSolved() {
 			break
 		}
 
-		if imprimirPasos {
-			fmt.Println("Dobles salteados")
+		if printSteps {
+			fmt.Println("Doubles by turns")
 			fmt.Println()
 		}
 
-		nuevoTablero.ResolverDoblesSalteados(&volverABarrer)
+		newGrid.SolveDoublesByTurns(&iterateAgain)
 
-		if imprimirPasos {
+		if printSteps {
 			fmt.Println()
 			fmt.Println()
 
-			nuevoTablero.Imprimir()
+			newGrid.Print()
 
 			fmt.Println()
 			fmt.Println()
 		}
 
-		if nuevoTablero.EstaResuelto() {
+		if newGrid.IsSolved() {
 			break
 		}
 
-		if imprimirPasos {
-			fmt.Println("Falta un número")
+		if printSteps {
+			fmt.Println("One number is missing")
 			fmt.Println()
 		}
 
-		nuevoTablero.ResolverFaltaUnNumero(&volverABarrer)
+		newGrid.SolveMissingNumber(&iterateAgain)
 
-		if imprimirPasos {
+		if printSteps {
 			fmt.Println()
 			fmt.Println()
 
-			nuevoTablero.Imprimir()
+			newGrid.Print()
 
 			fmt.Println()
 			fmt.Println()
 		}
 
-		if nuevoTablero.EstaResuelto() {
+		if newGrid.IsSolved() {
 			break
 		}
 
-		if imprimirPasos {
-			fmt.Println("Falta uno de un valor")
+		if printSteps {
+			fmt.Println("One box with one value is missing")
 			fmt.Println()
 		}
 
-		nuevoTablero.ResolverFaltaUnoDeUnValor(&volverABarrer)
+		newGrid.SolveOneBoxOneValue(&iterateAgain)
 
-		if imprimirPasos {
+		if printSteps {
 			fmt.Println()
 			fmt.Println()
 
-			nuevoTablero.Imprimir()
+			newGrid.Print()
 
 			fmt.Println()
 			fmt.Println()
 		}
 
-		if nuevoTablero.EstaResuelto() {
+		if newGrid.IsSolved() {
 			break
 		}
 
-		if imprimirPasos {
-			fmt.Println("Resolver líneas duplicadas")
+		if printSteps {
+			fmt.Println("Solve duplicated lines")
 			fmt.Println()
 		}
 
-		nuevoTablero.ResolverLineasDuplicadas(&volverABarrer)
+		newGrid.SolveDuplicatedLines(&iterateAgain)
 
-		if imprimirPasos {
+		if printSteps {
 			fmt.Println()
 			fmt.Println()
 
-			nuevoTablero.Imprimir()
+			newGrid.Print()
 
 			fmt.Println()
 			fmt.Println()
 		}
 
-		if nuevoTablero.EstaResuelto() {
+		if newGrid.IsSolved() {
 			break
 		}
 	}
 
-	return nuevoTablero
+	return newGrid
 }
 
-func (tablero Tablero) EstaResuelto() bool {
-	for indiceFila := 0; indiceFila < len(tablero); indiceFila++ {
-		for indiceColumna := 0; indiceColumna < len(tablero[indiceFila]); indiceColumna++ {
-			if !tablero[indiceFila][indiceColumna].visible {
+func (grid Grid) IsSolved() bool {
+	for rowIndex := 0; rowIndex < len(grid); rowIndex++ {
+		for columnIndex := 0; columnIndex < len(grid[rowIndex]); columnIndex++ {
+			if !grid[rowIndex][columnIndex].visible {
 				return false
 			}
 		}
@@ -245,394 +245,392 @@ func (tablero Tablero) EstaResuelto() bool {
 	return true
 }
 
-func (tablero *Tablero) ResolverDoblesSeguidos() {
-	volverABarrer := true
+func (grid *Grid) SolveDoublesInARow() {
+	iterateAgain := true
 
-	for volverABarrer {
-		volverABarrer = false
-		seguirBarriendo := true
+	for iterateAgain {
+		iterateAgain = false
+		continueIteration := true
 
-		for seguirBarriendo {
-			tablero.ResolverDoblesSeguidosHorizontal(&seguirBarriendo)
+		for continueIteration {
+			grid.SolveHorizontalDoublesInARow(&continueIteration)
 		}
 
-		if tablero.EstaResuelto() {
+		if grid.IsSolved() {
 			break
 		}
 
-		if imprimirPasos {
-			fmt.Println("Doy vuelta")
+		if printSteps {
+			fmt.Println("Rotate")
 		}
 
-		tablero.DarVuelta()
+		grid.Rotate()
 
-		seguirBarriendo = true
-		for seguirBarriendo {
-			tablero.ResolverDoblesSeguidosHorizontal(&seguirBarriendo)
+		continueIteration = true
+		for continueIteration {
+			grid.SolveHorizontalDoublesInARow(&continueIteration)
 
-			if seguirBarriendo {
-				volverABarrer = true
+			if continueIteration {
+				iterateAgain = true
 			}
 		}
 
-		if imprimirPasos {
-			tablero.DarVueltaAlReves()
-			fmt.Println("Vuelvo a la posición original")
+		if printSteps {
+			grid.RotateBackwards()
+			fmt.Println("Return to original position")
 		}
 
-		if tablero.EstaResuelto() {
+		if grid.IsSolved() {
 			break
 		}
 	}
 }
 
-func (tablero *Tablero) ResolverDoblesSalteados(volverABarrerExterno *bool) {
-	volverABarrer := true
+func (grid *Grid) SolveDoublesByTurns(externalIterateAgain *bool) {
+	iterateAgain := true
 
-	for volverABarrer {
-		volverABarrer = false
-		seguirBarriendo := true
+	for iterateAgain {
+		iterateAgain = false
+		continueIteration := true
 
-		for seguirBarriendo {
-			tablero.ResolverDoblesSalteadosHorizontal(&seguirBarriendo)
+		for continueIteration {
+			grid.ResolverDoblesSalteadosHorizontal(&continueIteration)
 
-			if seguirBarriendo {
-				*volverABarrerExterno = true
+			if continueIteration {
+				*externalIterateAgain = true
 			}
 		}
 
-		if tablero.EstaResuelto() {
+		if grid.IsSolved() {
 			break
 		}
 
-		if imprimirPasos {
-			fmt.Println("Doy vuelta")
+		if printSteps {
+			fmt.Println("Rotate")
 		}
 
-		tablero.DarVuelta()
+		grid.Rotate()
 
-		seguirBarriendo = true
-		for seguirBarriendo {
-			tablero.ResolverDoblesSalteadosHorizontal(&seguirBarriendo)
+		continueIteration = true
+		for continueIteration {
+			grid.ResolverDoblesSalteadosHorizontal(&continueIteration)
 
-			if seguirBarriendo {
-				volverABarrer = true
-				*volverABarrerExterno = true
+			if continueIteration {
+				iterateAgain = true
+				*externalIterateAgain = true
 			}
 		}
 
-		if imprimirPasos {
-			fmt.Println("Vuelvo a la posición original")
+		if printSteps {
+			fmt.Println("Rotate backwards")
 		}
-		tablero.DarVueltaAlReves()
+		grid.RotateBackwards()
 
-		if tablero.EstaResuelto() {
-			break
-		}
-	}
-}
-
-func (tablero *Tablero) ResolverFaltaUnNumero(volverABarrerExterno *bool) {
-	volverABarrer := true
-
-	for volverABarrer {
-		volverABarrer = false
-		seguirBarriendo := true
-
-		for seguirBarriendo {
-			tablero.ResolverFaltaUnNumeroHorizontal(&seguirBarriendo)
-
-			if seguirBarriendo {
-				*volverABarrerExterno = true
-			}
-		}
-
-		if tablero.EstaResuelto() {
-			break
-		}
-
-		if imprimirPasos {
-			fmt.Println("Doy vuelta")
-		}
-
-		tablero.DarVuelta()
-
-		seguirBarriendo = true
-		for seguirBarriendo {
-			tablero.ResolverFaltaUnNumeroHorizontal(&seguirBarriendo)
-
-			if seguirBarriendo {
-				volverABarrer = true
-				*volverABarrerExterno = true
-			}
-		}
-
-		if imprimirPasos {
-			fmt.Println("Vuelvo a la posición original")
-		}
-
-		tablero.DarVueltaAlReves()
-
-		if tablero.EstaResuelto() {
+		if grid.IsSolved() {
 			break
 		}
 	}
 }
 
-func (tablero *Tablero) ResolverFaltaUnoDeUnValor(volverABarrerExterno *bool) {
-	volverABarrer := true
+func (grid *Grid) SolveMissingNumber(externalIterateAgain *bool) {
+	iterateAgain := true
 
-	for volverABarrer {
-		volverABarrer = false
-		seguirBarriendo := true
+	for iterateAgain {
+		iterateAgain = false
+		continueIteration := true
 
-		for seguirBarriendo {
-			tablero.ResolverFaltaUnoDeUnValorHorizontal(&seguirBarriendo)
+		for continueIteration {
+			grid.ResolverFaltaUnNumeroHorizontal(&continueIteration)
 
-			if seguirBarriendo {
-				*volverABarrerExterno = true
+			if continueIteration {
+				*externalIterateAgain = true
 			}
 		}
 
-		if tablero.EstaResuelto() {
+		if grid.IsSolved() {
 			break
 		}
 
-		if imprimirPasos {
-			fmt.Println("Doy vuelta")
+		if printSteps {
+			fmt.Println("Rotate")
 		}
 
-		tablero.DarVuelta()
+		grid.Rotate()
 
-		seguirBarriendo = true
-		for seguirBarriendo {
-			tablero.ResolverFaltaUnoDeUnValorHorizontal(&seguirBarriendo)
+		continueIteration = true
+		for continueIteration {
+			grid.ResolverFaltaUnNumeroHorizontal(&continueIteration)
 
-			if seguirBarriendo {
-				volverABarrer = true
-				*volverABarrerExterno = true
+			if continueIteration {
+				iterateAgain = true
+				*externalIterateAgain = true
 			}
 		}
 
-		if imprimirPasos {
-			fmt.Println("Vuelvo a la posición original")
+		if printSteps {
+			fmt.Println("Rotate backwards")
 		}
 
-		tablero.DarVueltaAlReves()
+		grid.RotateBackwards()
 
-		if tablero.EstaResuelto() {
-			break
-		}
-	}
-}
-
-func (tablero *Tablero) ResolverLineasDuplicadas(volverABarrerExterno *bool) {
-	volverABarrer := true
-
-	for volverABarrer {
-		volverABarrer = false
-		seguirBarriendo := true
-
-		for seguirBarriendo {
-			tablero.ResolverLineasDuplicadasHorizontal(&seguirBarriendo)
-
-			if seguirBarriendo {
-				*volverABarrerExterno = true
-			}
-		}
-
-		if tablero.EstaResuelto() {
-			break
-		}
-
-		if imprimirPasos {
-			fmt.Println("Doy vuelta")
-		}
-
-		tablero.DarVuelta()
-
-		seguirBarriendo = true
-		for seguirBarriendo {
-			tablero.ResolverLineasDuplicadasHorizontal(&seguirBarriendo)
-
-			if seguirBarriendo {
-				volverABarrer = true
-				*volverABarrerExterno = true
-			}
-		}
-
-		if imprimirPasos {
-			fmt.Println("Vuelvo a la posición original")
-		}
-
-		tablero.DarVueltaAlReves()
-
-		if tablero.EstaResuelto() {
+		if grid.IsSolved() {
 			break
 		}
 	}
 }
 
-func (tablero Tablero) ResolverDoblesSeguidosHorizontal(seguirBarriendo *bool) Tablero {
-	*seguirBarriendo = false
+func (grid *Grid) SolveOneBoxOneValue(externalIterateAgain *bool) {
+	iterateAgain := true
 
-	for indiceFila := 0; indiceFila < len(tablero); indiceFila++ {
-		fila := tablero[indiceFila]
+	for iterateAgain {
+		iterateAgain = false
+		continueIteration := true
 
-		for indiceColumna := 0; indiceColumna < len(fila); indiceColumna++ {
-			casilla := fila[indiceColumna]
+		for continueIteration {
+			grid.SolveHorizontalOneBoxOneValue(&continueIteration)
+
+			if continueIteration {
+				*externalIterateAgain = true
+			}
+		}
+
+		if grid.IsSolved() {
+			break
+		}
+
+		if printSteps {
+			fmt.Println("Rotate")
+		}
+
+		grid.Rotate()
+
+		continueIteration = true
+		for continueIteration {
+			grid.SolveHorizontalOneBoxOneValue(&continueIteration)
+
+			if continueIteration {
+				iterateAgain = true
+				*externalIterateAgain = true
+			}
+		}
+
+		if printSteps {
+			fmt.Println("Rotate backwards")
+		}
+
+		grid.RotateBackwards()
+
+		if grid.IsSolved() {
+			break
+		}
+	}
+}
+
+func (grid *Grid) SolveDuplicatedLines(externalIterateAgain *bool) {
+	iterateAgain := true
+
+	for iterateAgain {
+		iterateAgain = false
+		continueIteration := true
+
+		for continueIteration {
+			grid.ResolverLineasDuplicadasHorizontal(&continueIteration)
+
+			if continueIteration {
+				*externalIterateAgain = true
+			}
+		}
+
+		if grid.IsSolved() {
+			break
+		}
+
+		if printSteps {
+			fmt.Println("Rotate")
+		}
+
+		grid.Rotate()
+
+		continueIteration = true
+		for continueIteration {
+			grid.ResolverLineasDuplicadasHorizontal(&continueIteration)
+
+			if continueIteration {
+				iterateAgain = true
+				*externalIterateAgain = true
+			}
+		}
+
+		if printSteps {
+			fmt.Println("Rotate backwards")
+		}
+
+		grid.RotateBackwards()
+
+		if grid.IsSolved() {
+			break
+		}
+	}
+}
+
+func (grid Grid) SolveHorizontalDoublesInARow(continueIteration *bool) Grid {
+	*continueIteration = false
+
+	for rowIndex := 0; rowIndex < len(grid); rowIndex++ {
+		row := grid[rowIndex]
+
+		for columnIndex := 0; columnIndex < len(row); columnIndex++ {
+			box := row[columnIndex]
 			primerColumna := 0
-			ultimaColumna := len(fila) - 1
-			siguienteColumna := indiceColumna + 1
-			anteriorColumna := indiceColumna - 1
-			opuesto := casilla.valor.ObtenerOpuesto()
+			ultimaColumna := len(row) - 1
+			nextColumn := columnIndex + 1
+			previousColumn := columnIndex - 1
+			opposite := box.value.GetOpposite()
 
-			if !casilla.visible || indiceColumna == ultimaColumna {
+			if !box.visible || columnIndex == ultimaColumna {
 				continue
 			}
 
-			siguienteCasilla := fila[siguienteColumna]
+			nextBox := row[nextColumn]
 
-			if !siguienteCasilla.visible {
+			if !nextBox.visible {
 				continue
 			}
 
-			if casilla.valor != siguienteCasilla.valor {
+			if box.value != nextBox.value {
 				continue
 			}
 
-			if indiceColumna != primerColumna {
-				anteriorCasilla := &fila[anteriorColumna]
+			if columnIndex != primerColumna {
+				previousBox := &row[previousColumn]
 
-				if !anteriorCasilla.visible {
-					if imprimirPasos {
-						fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, anteriorColumna, opuesto)
+				if !previousBox.visible {
+					if printSteps {
+						fmt.Printf("Fill box (x: %v, y: %v) with %v", rowIndex, previousColumn, opposite)
 						fmt.Println()
 					}
-					anteriorCasilla.valor = opuesto
-					anteriorCasilla.visible = true
-					*seguirBarriendo = true
+					previousBox.value = opposite
+					previousBox.visible = true
+					*continueIteration = true
 				}
 			}
 
-			if siguienteColumna != ultimaColumna {
-				siguienteSiguienteCasilla := &fila[siguienteColumna+1]
+			if nextColumn != ultimaColumna {
+				nextNextBox := &row[nextColumn+1]
 
-				if !siguienteSiguienteCasilla.visible {
-					if imprimirPasos {
-						fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, siguienteColumna+1, opuesto)
+				if !nextNextBox.visible {
+					if printSteps {
+						fmt.Printf("Fill box (x: %v, y: %v) with %v", rowIndex, nextColumn+1, opposite)
 						fmt.Println()
 					}
-					siguienteSiguienteCasilla.valor = opuesto
-					siguienteSiguienteCasilla.visible = true
-					*seguirBarriendo = true
+					nextNextBox.value = opposite
+					nextNextBox.visible = true
+					*continueIteration = true
 				}
 			}
 		}
 	}
 
-	return tablero
+	return grid
 }
 
-func (tablero Tablero) ResolverDoblesSalteadosHorizontal(seguirBarriendo *bool) Tablero {
-	*seguirBarriendo = false
+func (grid Grid) ResolverDoblesSalteadosHorizontal(continueIteration *bool) Grid {
+	*continueIteration = false
 
-	for indiceFila := 0; indiceFila < len(tablero); indiceFila++ {
-		fila := tablero[indiceFila]
+	for rowIndex := 0; rowIndex < len(grid); rowIndex++ {
+		row := grid[rowIndex]
 
-		for indiceColumna := 0; indiceColumna < len(fila); indiceColumna++ {
-			casilla := fila[indiceColumna]
-			ultimaColumna := len(fila) - 1
-			siguienteColumna := indiceColumna + 1
-			opuesto := casilla.valor.ObtenerOpuesto()
+		for columnIndex := 0; columnIndex < len(row); columnIndex++ {
+			box := row[columnIndex]
+			ultimaColumna := len(row) - 1
+			nextColumn := columnIndex + 1
+			opposite := box.value.GetOpposite()
 
-			if !casilla.visible || indiceColumna == ultimaColumna || siguienteColumna == ultimaColumna {
+			if !box.visible || columnIndex == ultimaColumna || nextColumn == ultimaColumna {
 				continue
 			}
 
-			siguienteCasilla := &fila[siguienteColumna]
+			nextBox := &row[nextColumn]
 
-			if siguienteCasilla.visible {
+			if nextBox.visible {
 				continue
 			}
 
-			siguienteSiguienteCasilla := fila[siguienteColumna+1]
+			nextNextBox := row[nextColumn+1]
 
-			if !siguienteSiguienteCasilla.visible || casilla.valor != siguienteSiguienteCasilla.valor {
+			if !nextNextBox.visible || box.value != nextNextBox.value {
 				continue
 			}
 
-			if imprimirPasos {
-				fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, siguienteColumna, opuesto)
+			if printSteps {
+				fmt.Printf("Fill box (x: %v, y: %v) with %v", rowIndex, nextColumn, opposite)
 				fmt.Println()
 			}
-			siguienteCasilla.valor = opuesto
-			siguienteCasilla.visible = true
-			*seguirBarriendo = true
+			nextBox.value = opposite
+			nextBox.visible = true
+			*continueIteration = true
 		}
 	}
 
-	return tablero
+	return grid
 }
 
-func (tablero Tablero) ResolverFaltaUnNumeroHorizontal(seguirBarriendo *bool) Tablero {
-	*seguirBarriendo = false
-	lado := len(tablero)
-	vecesMaximoEnFila := lado / 2
+func (grid Grid) ResolverFaltaUnNumeroHorizontal(continueIteration *bool) Grid {
+	*continueIteration = false
+	side := len(grid)
+	maxTimesInRow := side / 2
 
-	for indiceFila := 0; indiceFila < lado; indiceFila++ {
-		fila := tablero[indiceFila]
-		vecesEnFilaPorValor, hayAlMenosUnoNoVisible := tablero.ObtenerVecesEnFilaPorValor(fila)
-		/* fmt.Printf("indiceFila: %v | vecesEnFilaPorValor: %+v | hayAlMenosUnoNoVisible: %v", indiceFila, vecesEnFilaPorValor, hayAlMenosUnoNoVisible)
-		fmt.Println() */
+	for rowIndex := 0; rowIndex < side; rowIndex++ {
+		row := grid[rowIndex]
+		timesInRowByValue, hayAlMenosUnoNoVisible := grid.GetTimesInRowByValue(row)
 
 		if hayAlMenosUnoNoVisible {
-			var valorACompletar *Valor = nil
-			cantidadCeros := vecesEnFilaPorValor[0]
-			cantidadUnos := vecesEnFilaPorValor[1]
+			var valueToFill *Value = nil
+			zerosAmount := timesInRowByValue[0]
+			onesAmount := timesInRowByValue[1]
 
-			if cantidadCeros == vecesMaximoEnFila {
-				uno := Valor(1)
-				valorACompletar = &uno
-			} else if cantidadUnos == vecesMaximoEnFila {
-				cero := Valor(0)
-				valorACompletar = &cero
+			if zerosAmount == maxTimesInRow {
+				one := Value(1)
+				valueToFill = &one
+			} else if onesAmount == maxTimesInRow {
+				zero := Value(0)
+				valueToFill = &zero
 			}
 
-			if valorACompletar == nil {
+			if valueToFill == nil {
 				continue
 			}
 
-			for indiceColumna := 0; indiceColumna < len(fila); indiceColumna++ {
-				casilla := &fila[indiceColumna]
+			for columnIndex := 0; columnIndex < len(row); columnIndex++ {
+				box := &row[columnIndex]
 
-				if casilla.visible {
+				if box.visible {
 					continue
 				}
 
-				if imprimirPasos {
-					fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, indiceColumna, *valorACompletar)
+				if printSteps {
+					fmt.Printf("Fill box (x: %v, y: %v) with %v", rowIndex, columnIndex, *valueToFill)
 					fmt.Println()
 				}
 
-				casilla.valor = *valorACompletar
-				casilla.visible = true
+				box.value = *valueToFill
+				box.visible = true
 			}
 
-			*seguirBarriendo = true
+			*continueIteration = true
 		}
 	}
 
-	return tablero
+	return grid
 }
 
-type VecesEnFilaPorValor map[Valor]int
+type TimesInRowByValue map[Value]int
 
-func (v VecesEnFilaPorValor) String() string {
+func (v TimesInRowByValue) String() string {
 	stringToReturn := "{"
 
 	for k, v := range v {
-		stringToReturn += fmt.Sprintf("valor: %v | veces: %v", k, v)
+		stringToReturn += fmt.Sprintf("value: %v | times: %v", k, v)
 		stringToReturn += fmt.Sprintln()
 	}
 
@@ -641,121 +639,103 @@ func (v VecesEnFilaPorValor) String() string {
 	return stringToReturn
 }
 
-func (tablero Tablero) ObtenerVecesEnFilaPorValor(fila []Casilla) (map[Valor]int, bool) {
-	vecesEnFilaPorValor := map[Valor]int{
+func (grid Grid) GetTimesInRowByValue(row []Box) (map[Value]int, bool) {
+	timesInRowByValue := map[Value]int{
 		0: 0,
 		1: 0,
 	}
 
 	hayAlMenosUnoNoVisible := false
 
-	for indiceColumna := 0; indiceColumna < len(fila); indiceColumna++ {
-		casilla := fila[indiceColumna]
+	for columnIndex := 0; columnIndex < len(row); columnIndex++ {
+		box := row[columnIndex]
 
-		if !casilla.visible {
+		if !box.visible {
 			hayAlMenosUnoNoVisible = true
 			continue
 		}
 
-		vecesEnFilaPorValor[casilla.valor]++
+		timesInRowByValue[box.value]++
 	}
 
-	return vecesEnFilaPorValor, hayAlMenosUnoNoVisible
+	return timesInRowByValue, hayAlMenosUnoNoVisible
 }
 
-func (tablero Tablero) ResolverFaltaUnoDeUnValorHorizontal(seguirBarriendo *bool) Tablero {
-	*seguirBarriendo = false
-	lado := len(tablero)
-	vecesMaximoEnFila := lado / 2
+func (grid Grid) SolveHorizontalOneBoxOneValue(continueIteration *bool) Grid {
+	*continueIteration = false
+	side := len(grid)
+	maxTimesInRow := side / 2
 
-	// Se recorre cada fila
-	for indiceFila := 0; indiceFila < lado; indiceFila++ {
-		fila := tablero[indiceFila]
+	for rowIndex := 0; rowIndex < side; rowIndex++ {
+		row := grid[rowIndex]
 		// Se obtienen la cantidad de veces que se repite cada valor, y si hay al menos un valor no visible
-		vecesEnFilaPorValor, hayAlMenosUnoNoVisible := tablero.ObtenerVecesEnFilaPorValor(fila)
-		/* fmt.Printf("indiceFila: %v | vecesEnFilaPorValor: %+v | hayAlMenosUnoNoVisible: %v", indiceFila, vecesEnFilaPorValor, hayAlMenosUnoNoVisible)
-		fmt.Println() */
+		timesInRowByValue, isSomeNotVisible := grid.GetTimesInRowByValue(row)
 
-		if !hayAlMenosUnoNoVisible {
+		if !isSomeNotVisible {
 			continue
 		}
 
-		var valorACompletar *Valor = nil
-		cantidadCeros := vecesEnFilaPorValor[0]
-		cantidadUnos := vecesEnFilaPorValor[1]
+		var valueToFill *Value = nil
+		zerosAmount := timesInRowByValue[0]
+		onesAmount := timesInRowByValue[1]
 
-		if cantidadCeros == vecesMaximoEnFila-1 {
+		if zerosAmount == maxTimesInRow-1 {
 			// Si pueden haber como máxmo 7 ceros y hay 6, significa que el algoritmo va a evaluar qué pasa si se llena con cero cada casilla.
 			// Si se llega a una contradicción, la casilla se llena de su opuesto, el 1.
-			uno := Valor(1)
-			valorACompletar = &uno
-		} else if cantidadUnos == vecesMaximoEnFila-1 {
-			cero := Valor(0)
-			valorACompletar = &cero
+			one := Value(1)
+			valueToFill = &one
+		} else if onesAmount == maxTimesInRow-1 {
+			zero := Value(0)
+			valueToFill = &zero
 		}
 
-		if valorACompletar == nil {
-			/* fmt.Printf("Rompo con fila %v", indiceFila)
-			fmt.Println() */
+		if valueToFill == nil {
 			continue
 		}
 
-		opuesto := (*valorACompletar).ObtenerOpuesto()
-		// Se crea una copia de fila para que no se rellenen por error las casillas hipotéticas que usa el algoritmo.
-		filaAux := fila
-		indicesAACtualizar := make([]int, 0)
+		opposite := (*valueToFill).GetOpposite()
+		// Se crea una copia de fila para que no se rellenen por error las casillas hipotéticas que usa el algoritmo
+		auxRow := row
+		indexesToUpdate := make([]int, 0)
 
-		if imprimirPasos {
-			fmt.Print("línea principio: ")
-			Casillas(filaAux).Imprimir()
+		if printSteps {
+			fmt.Print("first line: ")
+			Boxes(auxRow).Print()
 			fmt.Println()
 		}
 
 		// Se recorre cada columna
-		for indiceColumna := 0; indiceColumna < lado; indiceColumna++ {
-			casilla := &filaAux[indiceColumna]
+		for columnIndex := 0; columnIndex < side; columnIndex++ {
+			box := &auxRow[columnIndex]
 
-			if casilla.visible {
+			if box.visible {
 				continue
 			}
 
 			// Se llena la casilla del valor opuesto (el valor que le falta una repetición) y luego se llenan todas las demás del valor a completar.
-			casilla.valor = opuesto
+			box.value = opposite
 
-			for indiceColumnaAux := 0; indiceColumnaAux < lado; indiceColumnaAux++ {
-				casillaAux := &filaAux[indiceColumnaAux]
+			for auxColumnIndex := 0; auxColumnIndex < side; auxColumnIndex++ {
+				auxBox := &auxRow[auxColumnIndex]
 
-				/* fmt.Println("Paso por casilla: ")
-				casillaAux.Imprimir()
-				fmt.Println() */
-
-				if indiceColumnaAux == indiceColumna || casillaAux.visible {
-					/* fmt.Println("continúo") */
+				if auxColumnIndex == columnIndex || auxBox.visible {
 					continue
 				}
 
-				/* fmt.Printf("Valor: %v", *valorACompletar) */
-
-				casillaAux.valor = *valorACompletar
+				auxBox.value = *valueToFill
 			}
 
-			/* fmt.Print("línea intermedia: ")
-			Casillas(filaAux).ImprimirTodo()
-			fmt.Println() */
-
-			// Se van a contar la cantidad del valor opuesto que existan seguidos en la fila. Si son más de 2, quiere decir que es una combinación
+			// Se van a contar la cantidad del value opposite que existan seguidos en la fila. Si son más de 2, quiere decir que es una combinación
 			// imposible. Entonces, si al haber llenado la original el opuesto se genera una combinación imposible, quiere decir que la original va
-			// del valor a completar.
+			// del value a completar.
 			cantidadSeguidos := 1
 
-			/* fmt.Printf("filaAux: %+v", Casillas(filaAux))
-			fmt.Println() */
-			for indiceColumnaAux := 0; indiceColumnaAux < lado; indiceColumnaAux++ {
-				casillaAux := filaAux[indiceColumnaAux]
+			for auxColumnIndex := 0; auxColumnIndex < side; auxColumnIndex++ {
+				auxBox := auxRow[auxColumnIndex]
 
-				// Contar como seguido si el valor es el buscado (el valor a completar) y la columna no es la primera (ya que sino no se podría
-				// acceder a [indiceColumnaAux-1]) y el valor anterior es igual al actual.
-				if casillaAux.valor == *valorACompletar && indiceColumnaAux != 0 && filaAux[indiceColumnaAux-1].valor == *valorACompletar {
+				// Contar como seguido si el value es el buscado (el value a completar) y la columna no es la primera (ya que sino no se podría
+				// acceder a [auxColumnIndex-1]) y el valor anterior es igual al actual.
+				if auxBox.value == *valueToFill && auxColumnIndex != 0 && auxRow[auxColumnIndex-1].value == *valueToFill {
 					cantidadSeguidos++
 				} else {
 					cantidadSeguidos = 1
@@ -764,160 +744,151 @@ func (tablero Tablero) ResolverFaltaUnoDeUnValorHorizontal(seguirBarriendo *bool
 				// Si ya van más de 2 seguidos, añadir la columna como para actualizar con el valor a completar y salir del loop ya que no hace falta
 				// ver si hay más seguidos, la contradicción está cumplida.
 				if cantidadSeguidos > 2 {
-					indicesAACtualizar = append(indicesAACtualizar, indiceColumna)
+					indexesToUpdate = append(indexesToUpdate, columnIndex)
 					break
 				}
 			}
 
-			for indiceColumnaAux := 0; indiceColumnaAux < lado; indiceColumnaAux++ {
-				casillaAux := &filaAux[indiceColumnaAux]
+			for auxColumnIndex := 0; auxColumnIndex < side; auxColumnIndex++ {
+				auxBox := &auxRow[auxColumnIndex]
 
-				if indiceColumnaAux == indiceColumna || casillaAux.visible {
+				if auxColumnIndex == columnIndex || auxBox.visible {
 					continue
 				}
 
-				casillaAux.valor = 2
+				auxBox.value = 2
 			}
 
-			filaAux = fila
-			/* fmt.Print("línea reseteada: ")
-			Casillas(filaAux).Imprimir()
-			fmt.Println() */
+			auxRow = row
 		}
 
-		for _, indiceAACtualizar := range indicesAACtualizar {
-			/* fmt.Printf("Índice a actualizar: %v", indiceAACtualizar)
-			fmt.Println() */
-			*seguirBarriendo = true
-			/* fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, indiceAACtualizar, *valorACompletar)
-			fmt.Println() */
-			fila[indiceAACtualizar].valor = *valorACompletar
-			fila[indiceAACtualizar].visible = true
+		for _, indexToUpdate := range indexesToUpdate {
+			*continueIteration = true
+			row[indexToUpdate].value = *valueToFill
+			row[indexToUpdate].visible = true
 		}
 	}
 
-	return tablero
+	return grid
 }
 
 // Dos líneas no pueden tener los mismos números en las mismas posiciones. Tienen que diferir en, por lo menos, dos celdas.
-func (tablero Tablero) ResolverLineasDuplicadasHorizontal(seguirBarriendo *bool) Tablero {
-	*seguirBarriendo = false
-	lado := len(tablero)
+func (grid Grid) ResolverLineasDuplicadasHorizontal(continueIteration *bool) Grid {
+	*continueIteration = false
+	side := len(grid)
 
-	// Recorro cada fila
-	for indiceFila := 0; indiceFila < lado; indiceFila++ {
+	for rowIndex := 0; rowIndex < side; rowIndex++ {
 		// Acá voy a guardar la posición en columna de la celda no visible en la fila original (como máximo, solo pueden diferir en una posición)
-		var posicionNoVisibleFila1 *int = nil
-		var posicionNoVisibleFila2 *int = nil
-		fila := &tablero[indiceFila]
+		var notVisiblePositionRow1 *int = nil
+		var notVisiblePositionRow2 *int = nil
+		row := &grid[rowIndex]
 
 		// Recorro cada una de las demás filas (todas excepto la que ya estoy recorriendo)
-		for indiceFilaAux := 0; indiceFilaAux < lado; indiceFilaAux++ {
-			filaAux := &tablero[indiceFilaAux]
+		for auxRowIndex := 0; auxRowIndex < side; auxRowIndex++ {
+			filaAux := &grid[auxRowIndex]
 			// Acá voy a guardar las posiciones en columnas de las celdas no visibles en la fila comparada
-			var posicionNoVisibleFilaAux1 *int = nil
-			var posicionNoVisibleFilaAux2 *int = nil
+			var notVisiblePositionAuxRow1 *int = nil
+			var notVisiblePositionAuxRow2 *int = nil
 
-			if indiceFila == indiceFilaAux {
+			if rowIndex == auxRowIndex {
 				continue
 			}
 
-			llenarFila := true
+			fillRow := true
 
 			// Recorro cada columna, ya que voy a comparar dos celdas con la misma posición de columna pero en diferentes filas
-			for indiceColumna := 0; indiceColumna < lado; indiceColumna++ {
-				celdaOriginal := (*fila)[indiceColumna]
-				celdaComparada := (*filaAux)[indiceColumna]
+			for columnIndex := 0; columnIndex < side; columnIndex++ {
+				originalBox := (*row)[columnIndex]
+				comparingBox := (*filaAux)[columnIndex]
 
-				indiceColumnaSinPuntero := indiceColumna
+				columnWithoutPointerIndex := columnIndex
 
 				// Si ambas celdas son visibles y sus valores son diferentes, entonces la comparación ya no puede realizarse
-				if celdaOriginal.visible && celdaComparada.visible && celdaOriginal.valor != celdaComparada.valor {
-					llenarFila = false
+				if originalBox.visible && comparingBox.visible && originalBox.value != comparingBox.value {
+					fillRow = false
 					break
 				}
 
-				if !celdaOriginal.visible || !celdaComparada.visible {
+				if !originalBox.visible || !comparingBox.visible {
 					// Si ambos pares se llenaron, quiere decir que la comparación ya no puede realizarse
-					if ObtenerCantidadNil(posicionNoVisibleFila1, posicionNoVisibleFila2,
-						posicionNoVisibleFilaAux1, posicionNoVisibleFilaAux2) > 2 {
-						llenarFila = false
+					if GetNilAmount(notVisiblePositionRow1, notVisiblePositionRow2,
+						notVisiblePositionAuxRow1, notVisiblePositionAuxRow2) > 2 {
+						fillRow = false
 						break
 					}
 
-					if !celdaOriginal.visible {
+					if !originalBox.visible {
 						// Si la celda original no es visible, entonces hay que ver si es la primera columna en no ser visible, la segunda o la tercera.
-						// En caso de ser la priemra va a la fila1, en caso de ser la segunda va a la fila2 y en caso de ser la tercera se rompe el ciclo
+						// En caso de ser la primera va a la fila1, en caso de ser la segunda va a la fila2 y en caso de ser la tercera se rompe el ciclo
 						// ya que no se pueden tener más de dos pares de celdas con una no visible
-						if posicionNoVisibleFila1 == nil && posicionNoVisibleFilaAux1 == nil {
-							posicionNoVisibleFila1 = &indiceColumnaSinPuntero
+						if notVisiblePositionRow1 == nil && notVisiblePositionAuxRow1 == nil {
+							notVisiblePositionRow1 = &columnWithoutPointerIndex
 							continue
-						} else if posicionNoVisibleFila2 == nil && posicionNoVisibleFilaAux2 == nil {
-							posicionNoVisibleFila2 = &indiceColumnaSinPuntero
+						} else if notVisiblePositionRow2 == nil && notVisiblePositionAuxRow2 == nil {
+							notVisiblePositionRow2 = &columnWithoutPointerIndex
 							continue
 						} else {
-							llenarFila = false
+							fillRow = false
 							break
 						}
-					} else if !celdaComparada.visible {
+					} else if !comparingBox.visible {
 						// Misma lógica que con la original pero se guardan en las aux.
 						// Importante que sea un else if, ya que no se puede dar la combinación de dos celdas no visibles para la misma fila, esto no
 						// da ninguna información a la hora de deducir valores
-						if posicionNoVisibleFila1 == nil && posicionNoVisibleFilaAux1 == nil {
-							posicionNoVisibleFilaAux1 = &indiceColumnaSinPuntero
+						if notVisiblePositionRow1 == nil && notVisiblePositionAuxRow1 == nil {
+							notVisiblePositionAuxRow1 = &columnWithoutPointerIndex
 							continue
-						} else if posicionNoVisibleFila2 == nil && posicionNoVisibleFilaAux2 == nil {
-							posicionNoVisibleFilaAux2 = &indiceColumnaSinPuntero
+						} else if notVisiblePositionRow2 == nil && notVisiblePositionAuxRow2 == nil {
+							notVisiblePositionAuxRow2 = &columnWithoutPointerIndex
 							continue
 						} else {
-							llenarFila = false
+							fillRow = false
 							break
 						}
 					}
-
 				}
 			}
 
-			if !llenarFila {
+			if !fillRow {
 				continue
 			}
 
-			if posicionNoVisibleFila1 != nil || posicionNoVisibleFilaAux1 != nil {
-				*seguirBarriendo = true
-				if posicionNoVisibleFila1 != nil {
-					fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, *posicionNoVisibleFila1, (*filaAux)[*posicionNoVisibleFila1].valor)
+			if notVisiblePositionRow1 != nil || notVisiblePositionAuxRow1 != nil {
+				*continueIteration = true
+				if notVisiblePositionRow1 != nil {
+					fmt.Printf("Fill box (x: %v, y: %v) with %v", rowIndex, *notVisiblePositionRow1, (*filaAux)[*notVisiblePositionRow1].value)
 					fmt.Println()
-					(*fila)[*posicionNoVisibleFila1].valor = (*filaAux)[*posicionNoVisibleFila1].valor.ObtenerOpuesto()
-					(*fila)[*posicionNoVisibleFila1].visible = true
-				} else if posicionNoVisibleFilaAux1 != nil {
-					fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, *posicionNoVisibleFilaAux1, (*filaAux)[*posicionNoVisibleFilaAux1].valor)
+					(*row)[*notVisiblePositionRow1].value = (*filaAux)[*notVisiblePositionRow1].value.GetOpposite()
+					(*row)[*notVisiblePositionRow1].visible = true
+				} else if notVisiblePositionAuxRow1 != nil {
+					fmt.Printf("Fill box (x: %v, y: %v) with %v", rowIndex, *notVisiblePositionAuxRow1, (*filaAux)[*notVisiblePositionAuxRow1].value)
 					fmt.Println()
-					(*fila)[*posicionNoVisibleFilaAux1].valor = (*filaAux)[*posicionNoVisibleFilaAux1].valor.ObtenerOpuesto()
-					(*fila)[*posicionNoVisibleFilaAux1].visible = true
+					(*row)[*notVisiblePositionAuxRow1].value = (*filaAux)[*notVisiblePositionAuxRow1].value.GetOpposite()
+					(*row)[*notVisiblePositionAuxRow1].visible = true
 				}
 			}
 
-			if posicionNoVisibleFila2 != nil || posicionNoVisibleFilaAux2 != nil {
-				*seguirBarriendo = true
-				if posicionNoVisibleFila2 != nil {
-					fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, *posicionNoVisibleFila2, (*filaAux)[*posicionNoVisibleFila2].valor)
+			if notVisiblePositionRow2 != nil || notVisiblePositionAuxRow2 != nil {
+				*continueIteration = true
+				if notVisiblePositionRow2 != nil {
+					fmt.Printf("Fill box (x: %v, y: %v) with %v", rowIndex, *notVisiblePositionRow2, (*filaAux)[*notVisiblePositionRow2].value)
 					fmt.Println()
-					(*fila)[*posicionNoVisibleFila2].valor = (*filaAux)[*posicionNoVisibleFila2].valor.ObtenerOpuesto()
-					(*fila)[*posicionNoVisibleFila2].visible = true
-				} else if posicionNoVisibleFilaAux2 != nil {
-					fmt.Printf("Lleno casilla (x: %v, y: %v) con %v", indiceFila, *posicionNoVisibleFilaAux2, (*filaAux)[*posicionNoVisibleFilaAux2].valor)
+					(*row)[*notVisiblePositionRow2].value = (*filaAux)[*notVisiblePositionRow2].value.GetOpposite()
+					(*row)[*notVisiblePositionRow2].visible = true
+				} else if notVisiblePositionAuxRow2 != nil {
+					fmt.Printf("Fill box (x: %v, y: %v) with %v", rowIndex, *notVisiblePositionAuxRow2, (*filaAux)[*notVisiblePositionAuxRow2].value)
 					fmt.Println()
-					(*fila)[*posicionNoVisibleFilaAux2].valor = (*filaAux)[*posicionNoVisibleFilaAux2].valor.ObtenerOpuesto()
-					(*fila)[*posicionNoVisibleFilaAux2].visible = true
+					(*row)[*notVisiblePositionAuxRow2].value = (*filaAux)[*notVisiblePositionAuxRow2].value.GetOpposite()
+					(*row)[*notVisiblePositionAuxRow2].visible = true
 				}
 			}
 		}
 	}
 
-	return tablero
+	return grid
 }
 
-func ObtenerCantidadNil(elementos ...*int) int {
+func GetNilAmount(elementos ...*int) int {
 	cantidad := 0
 
 	for _, elemento := range elementos {
@@ -929,41 +900,41 @@ func ObtenerCantidadNil(elementos ...*int) int {
 	return cantidad
 }
 
-func (valor Valor) ObtenerOpuesto() Valor {
-	opuestos := map[Valor]Valor{
+func (value Value) GetOpposite() Value {
+	opposites := map[Value]Value{
 		0: 1,
 		1: 0,
 		2: 2,
 	}
 
-	return opuestos[valor]
+	return opposites[value]
 }
 
 // Da una vuelta de 90° antihorario
-func (tablero *Tablero) DarVuelta() {
-	lado := len(*tablero)
-	nuevoTablero := make(Tablero, lado)
-	filas := len(*tablero)
+func (grid *Grid) Rotate() {
+	side := len(*grid)
+	newGrid := make(Grid, side)
+	rows := len(*grid)
 
-	for i := 0; i < filas; i++ {
-		nuevoTablero[i] = make([]Casilla, lado)
+	for i := 0; i < rows; i++ {
+		newGrid[i] = make([]Box, side)
 	}
 
-	for i := 0; i < filas; i++ {
-		columnas := len((*tablero)[i])
+	for i := 0; i < rows; i++ {
+		columns := len((*grid)[i])
 
-		for j := 0; j < columnas; j++ {
-			nuevoTablero[filas-j-1][i] = (*tablero)[i][j]
+		for j := 0; j < columns; j++ {
+			newGrid[rows-j-1][i] = (*grid)[i][j]
 		}
 	}
 
-	*tablero = nuevoTablero
+	*grid = newGrid
 }
 
 // Da una vuelta de 90° horario
-// TODO: Optimizar para que en vez de girar 3 veces antihorario, gire una sola horario
-func (tablero *Tablero) DarVueltaAlReves() {
+// TODO: Optimizar para que en vez de girar 3 times antihorario, gire una sola horario
+func (grid *Grid) RotateBackwards() {
 	for i := 0; i < 3; i++ {
-		tablero.DarVuelta()
+		grid.Rotate()
 	}
 }
