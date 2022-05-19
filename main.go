@@ -888,16 +888,16 @@ func (grid Grid) ResolverLineasDuplicadasHorizontal(continueIteration *bool) Gri
 	return grid
 }
 
-func GetNilAmount(elementos ...*int) int {
-	cantidad := 0
+func GetNilAmount(items ...*int) int {
+	amount := 0
 
-	for _, elemento := range elementos {
-		if elemento != nil {
-			cantidad++
+	for _, item := range items {
+		if item != nil {
+			amount++
 		}
 	}
 
-	return cantidad
+	return amount
 }
 
 func (value Value) GetOpposite() Value {
