@@ -11,7 +11,6 @@ type Box struct {
 }
 type Grid [][]Box
 type Boxes []Box
-type Rotable func(*bool) Grid
 
 var printSteps bool
 
