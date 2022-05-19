@@ -339,7 +339,7 @@ func (grid *Grid) SolveMissingNumber(externalIterateAgain *bool) {
 		continueIteration := true
 
 		for continueIteration {
-			grid.ResolverFaltaUnNumeroHorizontal(&continueIteration)
+			grid.SolveHorizontalMissingNumber(&continueIteration)
 
 			if continueIteration {
 				*externalIterateAgain = true
@@ -358,7 +358,7 @@ func (grid *Grid) SolveMissingNumber(externalIterateAgain *bool) {
 
 		continueIteration = true
 		for continueIteration {
-			grid.ResolverFaltaUnNumeroHorizontal(&continueIteration)
+			grid.SolveHorizontalMissingNumber(&continueIteration)
 
 			if continueIteration {
 				iterateAgain = true
@@ -481,12 +481,12 @@ func (grid Grid) SolveHorizontalDoublesInARow(continueIteration *bool) Grid {
 		for columnIndex := 0; columnIndex < len(row); columnIndex++ {
 			box := row[columnIndex]
 			primerColumna := 0
-			ultimaColumna := len(row) - 1
+			lastColumn := len(row) - 1
 			nextColumn := columnIndex + 1
 			previousColumn := columnIndex - 1
 			opposite := box.value.GetOpposite()
 
-			if !box.visible || columnIndex == ultimaColumna {
+			if !box.visible || columnIndex == lastColumn {
 				continue
 			}
 
@@ -514,7 +514,7 @@ func (grid Grid) SolveHorizontalDoublesInARow(continueIteration *bool) Grid {
 				}
 			}
 
-			if nextColumn != ultimaColumna {
+			if nextColumn != lastColumn {
 				nextNextBox := &row[nextColumn+1]
 
 				if !nextNextBox.visible {
@@ -541,11 +541,11 @@ func (grid Grid) ResolverDoblesSalteadosHorizontal(continueIteration *bool) Grid
 
 		for columnIndex := 0; columnIndex < len(row); columnIndex++ {
 			box := row[columnIndex]
-			ultimaColumna := len(row) - 1
+			lastColumn := len(row) - 1
 			nextColumn := columnIndex + 1
 			opposite := box.value.GetOpposite()
 
-			if !box.visible || columnIndex == ultimaColumna || nextColumn == ultimaColumna {
+			if !box.visible || columnIndex == lastColumn || nextColumn == lastColumn {
 				continue
 			}
 
@@ -574,16 +574,16 @@ func (grid Grid) ResolverDoblesSalteadosHorizontal(continueIteration *bool) Grid
 	return grid
 }
 
-func (grid Grid) ResolverFaltaUnNumeroHorizontal(continueIteration *bool) Grid {
+func (grid Grid) SolveHorizontalMissingNumber(continueIteration *bool) Grid {
 	*continueIteration = false
 	side := len(grid)
 	maxTimesInRow := side / 2
 
 	for rowIndex := 0; rowIndex < side; rowIndex++ {
 		row := grid[rowIndex]
-		timesInRowByValue, hayAlMenosUnoNoVisible := grid.GetTimesInRowByValue(row)
+		timesInRowByValue, isSomeNotVisible := grid.GetTimesInRowByValue(row)
 
-		if hayAlMenosUnoNoVisible {
+		if isSomeNotVisible {
 			var valueToFill *Value = nil
 			zerosAmount := timesInRowByValue[0]
 			onesAmount := timesInRowByValue[1]
@@ -644,20 +644,20 @@ func (grid Grid) GetTimesInRowByValue(row []Box) (map[Value]int, bool) {
 		1: 0,
 	}
 
-	hayAlMenosUnoNoVisible := false
+	isSomeNotVisible := false
 
 	for columnIndex := 0; columnIndex < len(row); columnIndex++ {
 		box := row[columnIndex]
 
 		if !box.visible {
-			hayAlMenosUnoNoVisible = true
+			isSomeNotVisible = true
 			continue
 		}
 
 		timesInRowByValue[box.value]++
 	}
 
-	return timesInRowByValue, hayAlMenosUnoNoVisible
+	return timesInRowByValue, isSomeNotVisible
 }
 
 func (grid Grid) SolveHorizontalOneBoxOneValue(continueIteration *bool) Grid {
