@@ -1,21 +1,21 @@
-# Resolvedor del juego de lógica "binario"
+# Solver of Binary logic game
 
-Binario también conocido como Takuzu es un puzzle de lógica con reglas simples y soluciones desafiantes.
+Binayr, also known as Takuzu, is a logic puzzle with simple rules and challenging solutions.
 
-## Reglas
+## Rules
 
-Las reglas son simples. Binario se juega en una cuadrícula rectangular sin ningún tamaño estandard. Algunos recuadros empiezan rellenos con ceros o unos. El resto de recuadros están vacíos. El objetivo es poner los ceros o unos en todos los recuadros tal que:
-1. Cada fila y cada columna debe contener el mismo número de unos y ceros.
-2. Más de dos números iguales no pueden ser adyacentes.
-3. Cada fila y columna es única.
+Rules are simple. Binary is played in a rectangle grid without a standard size. Some boxes start filled with zeros and ones. The remaining boxes are empty. The objective is put zeros or ones in every box such that:
+1. Each row and each column contain same amount of zeros and ones.
+2. More than two equal numbers are not adjacents.
+3. Each row and column is unique.
 
-## Solución
+## Solution
 
-La solución ofrecida tiene en cuenta que siempre se juega en una cuadrícula cuadrada (todos los lados miden lo mismo). Además, solo se exponen las estrategias concluídas por su desarrollador. El programa no genera sus reglas propias.
+The following solution is based on having a square grid (every side measures the same). Also there are only the strategies thought by its developer. The program doesn't make its own rules.
 
-## Ejecución
+## Executon
 
-Teniendo instalado Go, pararse sobre la carpeta del proyecto y ejecutar 
+Install Go and execute this in the root directory of the project:
 
 `go run main.go`
 
