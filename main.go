@@ -9,7 +9,7 @@ type Box struct {
 	value   Value
 	visible bool
 }
-type Grid [][]Box
+type Grid []Boxes
 type Boxes []Box
 
 var printSteps bool
