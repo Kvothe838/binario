@@ -1,6 +1,6 @@
 # Solver of Binary logic game
 
-Binayr, also known as Takuzu, is a logic puzzle with simple rules and challenging solutions.
+Binary, also known as Takuzu, is a logic puzzle with simple rules and challenging solutions.
 
 ## Rules
 
