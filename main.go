@@ -22,7 +22,7 @@ func main() {
 
 	fmt.Println()
 	fmt.Println()
-	printSteps = false
+	printSteps = true
 	solvedGrid := grid.Solve()
 
 	fmt.Println()
@@ -433,7 +433,7 @@ func (grid *Grid) SolveDuplicatedLines(externalIterateAgain *bool) {
 		continueIteration := true
 
 		for continueIteration {
-			grid.ResolverLineasDuplicadasHorizontal(&continueIteration)
+			grid.SolveDuplicatedHorizontalLines(&continueIteration)
 
 			if continueIteration {
 				*externalIterateAgain = true
@@ -452,7 +452,7 @@ func (grid *Grid) SolveDuplicatedLines(externalIterateAgain *bool) {
 
 		continueIteration = true
 		for continueIteration {
-			grid.ResolverLineasDuplicadasHorizontal(&continueIteration)
+			grid.SolveDuplicatedHorizontalLines(&continueIteration)
 
 			if continueIteration {
 				iterateAgain = true
@@ -727,7 +727,7 @@ func (grid Grid) SolveHorizontalOneBoxOneValue(continueIteration *bool) Grid {
 			// Se van a contar la cantidad del value opposite que existan seguidos en la fila. Si son más de 2, quiere decir que es una combinación
 			// imposible. Entonces, si al haber llenado la original el opuesto se genera una combinación imposible, quiere decir que la original va
 			// del value a completar.
-			cantidadSeguidos := 1
+			amountInARow := 1
 
 			for auxColumnIndex := 0; auxColumnIndex < side; auxColumnIndex++ {
 				auxBox := auxRow[auxColumnIndex]
@@ -735,14 +735,14 @@ func (grid Grid) SolveHorizontalOneBoxOneValue(continueIteration *bool) Grid {
 				// Contar como seguido si el value es el buscado (el value a completar) y la columna no es la primera (ya que sino no se podría
 				// acceder a [auxColumnIndex-1]) y el valor anterior es igual al actual.
 				if auxBox.value == *valueToFill && auxColumnIndex != 0 && auxRow[auxColumnIndex-1].value == *valueToFill {
-					cantidadSeguidos++
+					amountInARow++
 				} else {
-					cantidadSeguidos = 1
+					amountInARow = 1
 				}
 
 				// Si ya van más de 2 seguidos, añadir la columna como para actualizar con el valor a completar y salir del loop ya que no hace falta
 				// ver si hay más seguidos, la contradicción está cumplida.
-				if cantidadSeguidos > 2 {
+				if amountInARow > 2 {
 					indexesToUpdate = append(indexesToUpdate, columnIndex)
 					break
 				}
@@ -772,7 +772,7 @@ func (grid Grid) SolveHorizontalOneBoxOneValue(continueIteration *bool) Grid {
 }
 
 // Dos líneas no pueden tener los mismos números en las mismas posiciones. Tienen que diferir en, por lo menos, dos celdas.
-func (grid Grid) ResolverLineasDuplicadasHorizontal(continueIteration *bool) Grid {
+func (grid Grid) SolveDuplicatedHorizontalLines(continueIteration *bool) Grid {
 	*continueIteration = false
 	side := len(grid)
 
